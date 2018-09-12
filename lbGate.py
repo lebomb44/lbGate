@@ -1,40 +1,54 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-import SocketServer
-import SimpleHTTPServer
-import re
+import sys, os, re, shutil, json, urllib
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import lbSerial
 
-HTTPD_PORT = 84
+HTTPD_PORT = 8444
 
-class CustomHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class CustomHandler(BaseHTTPRequestHandler):
+	def ok200(self, resp):
+		self.send_response(200)
+		self.send_header('Content-type','text/html')
+		self.end_headers()
+		self.wfile.write(resp.encode())
+	def error404(self, resp):
+		self.send_response(404)
+		self.end_headers()
+		self.wfile.write(resp.encode())
 	def do_GET(self):
-		if None != re.search('/api/square/*', self.path):
-			num = float(self.path.split('/')[-1])
-			print self.path.split('/')
-			#This URL will trigger our sample function and send what it returns back to the browser
-			self.send_response(200)
-			self.send_header('Content-type','text/html')
-			self.end_headers()
-			self.wfile.write(str(num*num)) #call sample function here
-			return
-		if None != re.search('/api/mult/*', self.path):
-			num1 = float(self.path.split('/')[-1])
-			num2 = float(self.path.split('/')[-2])
-			#This URL will trigger our sample function and send what it returns back to the browser
-			self.send_response(200)
-			self.send_header('Content-type','text/html')
-			self.end_headers()
-			self.wfile.write(str(num1*num2)) #call sample function here
-			return
+		urlTokens = self.path.split('/')
+		urlTokensLen = len(urlTokens)
+		print(urlTokens)
+		if 1 < urlTokensLen:
+			api = urlTokens[1]
+			if "api" == api:
+				if 2 < urlTokensLen:
+					node = urlTokens[2]
+					if True == lbSerial.isAccepted(node):
+						cmd = ""
+						for token in urlTokens:
+							cmd = cmd + " " + token
+						lbSerial.send(cmd)
+						self.ok200(cmd)
+					else:
+						self.error404("Bad node: " + node)
+				else:
+					self.error404("Command to short: " + api)
+			else:
+				self.error404("Bad location: " + api)
 		else:
-			#serve files, and directory listings by following self.path from
-			#current working directory
-			SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+			self.error404("Url too short")
 
 if __name__=='__main__':
-	httpd = SocketServer.ThreadingTCPServer(("", HTTPD_PORT), CustomHandler)
+	httpd = HTTPServer(("", HTTPD_PORT), CustomHandler)
 
-	print "Serving at port ", HTTPD_PORT
-	httpd.serve_forever()
+	print("Serving at port ", HTTPD_PORT)
+	try:
+		httpd.serve_forever()
+	except KeyboardInterrupt:
+		pass
+	print("Stopping HTTP server")
+	httpd.server_close()
 
