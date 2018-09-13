@@ -30,8 +30,8 @@ class CustomHandler(BaseHTTPRequestHandler):
 						cmd = ""
 						for token in urlTokens:
 							cmd = cmd + " " + token
-						lbSerial.send(cmd)
-						self.ok200(cmd)
+						lbSerial.send(node, cmd)
+						self.ok200(lbSerial.nodeList[node]['port'])
 					else:
 						self.error404("Bad node: " + node)
 				else:
@@ -41,7 +41,7 @@ class CustomHandler(BaseHTTPRequestHandler):
 		else:
 			self.error404("Url too short")
 
-if __name__=='__main__':
+if __name__ == '__main__':
 	httpd = HTTPServer(("", HTTPD_PORT), CustomHandler)
 
 	print("Serving at port ", HTTPD_PORT)
