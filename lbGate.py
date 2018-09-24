@@ -6,10 +6,9 @@ import threading
 import time
 import requests
 import serial
-from typing import Dict, Union
 
-nodeList: Dict[str, Dict[str, Union[str, serial.Serial]]] = dict(
-	kitchen={'port': '/dev/ttyUSB0', 'fd': serial.Serial()})
+nodeList = dict(
+	kitchen={'port': '/dev/ttyUSB1', 'fd': serial.Serial()})
 
 for node in nodeList:
 	nodeList[node]['fd'].port = nodeList[node]['port']
@@ -17,13 +16,13 @@ for node in nodeList:
 	nodeList[node]['fd'].parity = serial.PARITY_NONE
 	nodeList[node]['fd'].stopbits = serial.STOPBITS_ONE
 	nodeList[node]['fd'].bytesize = serial.EIGHTBITS
-	nodeList[node]['fd'].timeout = 0.1
+	nodeList[node]['fd'].timeout = 0
 
 HTTPD_PORT = 8444
 
-jeedomUrl = {'kitchen_doorShutter 0': 'http://sno.ddns.net/jeedom/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=202',
-			 'kitchen_doorShutter 1': 'http://sno.ddns.net/jeedom/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=200',
-			 'kitchen_doorShutter 2': 'http://sno.ddns.net/jeedom/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=201',
+jeedomUrl = {'kitchen_doorShutterButton_hk 0': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=202',
+			 'kitchen_doorShutterButton_hk 1': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=200',
+			 'kitchen_doorShutterButton_hk 2': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=201',
 			 'cmd4': 'http://localhost/jeedom/test',
 			 'cmd5': 'http://localhost/jeedom/test'
 			 }
@@ -33,18 +32,20 @@ class Serial2Http(threading.Thread):
 	def run(self):
 		while True:
 			for node in nodeList:
-				if nodeList[node]['fd'].is_open is False:
+				if nodeList[node]['fd'].isOpen() is False:
 					print("Opening " + nodeList[node]['fd'].port)
-					print(nodeList[node]['fd'].get_settings())
+					#print(nodeList[node]['fd'].get_settings())
 					nodeList[node]['fd'].open()
-				if nodeList[node]['fd'].is_open is True:
-					line: str = nodeList[node]['fd'].readline().decode("utf-8").rstrip()
-					if "" != line:
-						print("Serial CMD=" + line)
-						if line in jeedomUrl:
-							requests.get(jeedomUrl[line])
-						else:
-							print("ERROR: Serial CMD '" + line + "' not found !")
+					nodeList[node]['fd'].flushInput()
+				if nodeList[node]['fd'].isOpen() is True:
+					if 0 < nodeList[node]['fd'].inWaiting():
+						line = nodeList[node]['fd'].readline().decode("utf-8").rstrip()
+						if "" != line:
+							if line in jeedomUrl:
+								print("Serial CMD=" + line)
+								requests.get(jeedomUrl[line])
+							else:
+								print("ERROR: Serial CMD '" + line + "' not found !")
 			time.sleep(0.01)
 
 
@@ -62,20 +63,20 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
 
 	def do_GET(self):
 		urlTokens = self.path.split('/')
-		urlTokensLen: int = len(urlTokens)
+		urlTokensLen = len(urlTokens)
 		print(urlTokens)
 		if 1 < urlTokensLen:
-			api: str = urlTokens[1]
+			api = urlTokens[1]
 			if "api" == api:
 				if 2 < urlTokensLen:
-					node: str = urlTokens[2]
+					node = urlTokens[2]
 					if node in nodeList:
 						if 3 < urlTokensLen:
-							cmd: str = node + "_" + urlTokens[3]
+							cmd = node + "_" + urlTokens[3]
 							if 4 < urlTokensLen:
 								for token in urlTokens[4:]:
 									cmd = cmd + " " + token
-							nodeList[node]['fd'].write(cmd)
+							nodeList[node]['fd'].write(("\n\n" + cmd + "\n\n").encode('utf-8'))
 							self.ok200(cmd)
 						else:
 							self.error404("No command for node: " + node)
