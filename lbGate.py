@@ -25,8 +25,8 @@ for nodeSerial in nodeList:
 
 MAX_NODE_ERRORS = 1000
 HTTPD_PORT = 8444
-OLIVIER_EMAIL = "cambon.olivier@gmail.com"
 SMS_URL = 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=288&title=Jeedom&message='
+EMAIL_URL = 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=225&title=Jeedom&message='
 
 
 def httpRequest(url):
@@ -72,8 +72,6 @@ jeedomUrl = dict({
     'dining doorWindowContact hk 0': {'fct': alarmStatus_setOpen, 'url': "dining doorWindowContact"},
     'dining doorShutterContact hk 1': {'fct': alarmStatus_setClose, 'url': "dining doorShutterContact"},
     'dining doorShutterContact hk 0': {'fct': alarmStatus_setOpen, 'url': "dining doorShutterContact"},
-    'dining tvWindowContact hk 1': {'fct': alarmStatus_setClose, 'url': "dining tvWindowContact"},
-    'dining tvWindowContact hk 0': {'fct': alarmStatus_setOpen, 'url': "dining tvWindowContact"},
     'dining tvShutterContact hk 1': {'fct': alarmStatus_setClose, 'url': "dining tvShutterContact"},
     'dining tvShutterContact hk 0': {'fct': alarmStatus_setOpen, 'url': "dining tvShutterContact"},
     'dining lightRelay get 1': {'fct': None, 'url': "dining lightRelay"},
@@ -124,7 +122,6 @@ alarmStatus = dict({
     'dining windowShutterContact': True,
     'dining doorWindowContact': True,
     'dining doorShutterContact': True,
-    'dining tvWindowContact': True,
     'dining tvShutterContact': True,
     'kitchen windowWindowContact': True,
     'kitchen windowShutterContact': True,
@@ -152,14 +149,15 @@ def sendSMS(msg):
     pass
 
 
-def sendEmail(email, object, msg):
-    log("Send EMAIL at " + email + ": " + object + " : " + msg)
+def sendEmail(msg):
+    log("Send EMAIL: " + msg)
+    httpRequest(EMAIL_URL + urllib.parse.quote(msg))
     pass
 
 
 def sendAlert(msg):
     sendSMS(msg)
-    sendEmail(OLIVIER_EMAIL, "Alerte", msg)
+    sendEmail(msg)
 
 
 class Serial2Http(threading.Thread):
