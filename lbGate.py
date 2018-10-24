@@ -11,9 +11,11 @@ import sys
 import urllib.parse
 
 nodeList = dict(
+    safety={'port': '/dev/safety', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0},
     dining={'port': '/dev/dining', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0},
     kitchen={'port': '/dev/kitchen', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0},
-    bedroom={'port': '/dev/bedroom', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0})
+    bedroom={'port': '/dev/bedroom', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0},
+    ext={'port': '/dev/ext', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0})
 
 for nodeSerial in nodeList:
     nodeList[nodeSerial]['fd'].port = nodeList[nodeSerial]['port']
@@ -21,9 +23,13 @@ for nodeSerial in nodeList:
     nodeList[nodeSerial]['fd'].parity = serial.PARITY_NONE
     nodeList[nodeSerial]['fd'].stopbits = serial.STOPBITS_ONE
     nodeList[nodeSerial]['fd'].bytesize = serial.EIGHTBITS
-    nodeList[nodeSerial]['fd'].timeout = 0.001
+    nodeList[nodeSerial]['fd'].timeout = 0.01
+    nodeList[nodeSerial]['fd'].xonxoff = False
+    nodeList[nodeSerial]['fd'].rtscts = False
+    nodeList[nodeSerial]['fd'].dsrdtr = False
+    nodeList[nodeSerial]['fd'].writeTimeout = 0.1
 
-MAX_NODE_ERRORS = 1000
+MAX_NODE_ERRORS = 5000
 HTTPD_PORT = 8444
 SMS_URL = 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=288&title=Jeedom&message='
 EMAIL_URL = 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=225&title=Jeedom&message='
@@ -56,14 +62,37 @@ def timeoutCheck(node_):
 
 def timeoutReset(node_):
     global nodeList
+    # log("### Reset of node " + node_)
     nodeList[node_]['errorCnt'] = 0
 
 
 jeedomUrl = dict({
+    'safety ping get': {'fct': timeoutReset, 'url': "safety"},
+    'safety moveCoridorContact hk 0': {'fct': None, 'url': "safety moveCoridorContact"},
+    'safety moveCoridorContact hk 1': {'fct': None, 'url': "safety moveCoridorContact"},
+    'safety moveDiningContact hk 0': {'fct': None, 'url': "safety moveDiningContact"},
+    'safety moveDiningContact hk 1': {'fct': None, 'url': "safety moveDiningContact"},
+    'safety moveEntryContact hk 0': {'fct': None, 'url': "safety moveEntryContact"},
+    'safety moveEntryContact hk 1': {'fct': None, 'url': "safety moveEntryContact"},
+    'safety moveRelay get 0': {'fct': None, 'url': "safety moveRelay"},
+    'safety moveRelay get 1': {'fct': None, 'url': "safety moveRelay"},
+    'safety out0Relay get 0': {'fct': None, 'url': "safety out0Relay"},
+    'safety out0Relay get 1': {'fct': None, 'url': "safety out0Relay"},
+    'safety out1Relay get 0': {'fct': None, 'url': "safety out1Relay"},
+    'safety out1Relay get 1': {'fct': None, 'url': "safety out1Relay"},
+    'safety out2Relay get 0': {'fct': None, 'url': "safety out2Relay"},
+    'safety out2Relay get 1': {'fct': None, 'url': "safety out2Relay"},
+    'safety out3Relay get 0': {'fct': None, 'url': "safety out3Relay"},
+    'safety out3Relay get 1': {'fct': None, 'url': "safety out3Relay"},
+    'safety out4Relay get 0': {'fct': None, 'url': "safety out4Relay"},
+    'safety out4Relay get 1': {'fct': None, 'url': "safety out4Relay"},
     'dining ping get': {'fct': timeoutReset, 'url': "dining"},
-    'dining windowShutterButton hk 0': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=192'},
-    'dining windowShutterButton hk 1': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=190'},
-    'dining windowShutterButton hk 2': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=191'},
+    'dining windowShutterButton hk 0': {'fct': httpRequest,
+                                        'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=192'},
+    'dining windowShutterButton hk 1': {'fct': httpRequest,
+                                        'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=190'},
+    'dining windowShutterButton hk 2': {'fct': httpRequest,
+                                        'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=191'},
     'dining windowWindowContact hk 1': {'fct': alarmStatus_setClose, 'url': "dining windowWindowContact"},
     'dining windowWindowContact hk 0': {'fct': alarmStatus_setOpen, 'url': "dining windowWindowContact"},
     'dining windowShutterContact hk 1': {'fct': alarmStatus_setClose, 'url': "dining windowShutterContact"},
@@ -81,9 +110,12 @@ jeedomUrl = dict({
     'kitchen windowWindowContact hk 0': {'fct': alarmStatus_setOpen, 'url': "kitchen windowWindowContact"},
     'kitchen windowShutterContact hk 1': {'fct': alarmStatus_setClose, 'url': "kitchen windowShutterContact"},
     'kitchen windowShutterContact hk 0': {'fct': alarmStatus_setOpen, 'url': "kitchen windowShutterContact"},
-    'kitchen doorShutterButton hk 0': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=202'},
-    'kitchen doorShutterButton hk 1': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=200'},
-    'kitchen doorShutterButton hk 2': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=201'},
+    'kitchen doorShutterButton hk 0': {'fct': httpRequest,
+                                       'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=202'},
+    'kitchen doorShutterButton hk 1': {'fct': httpRequest,
+                                       'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=200'},
+    'kitchen doorShutterButton hk 2': {'fct': httpRequest,
+                                       'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=201'},
     'kitchen doorWindowContact hk 1': {'fct': alarmStatus_setClose, 'url': "kitchen doorWindowContact"},
     'kitchen doorWindowContact hk 0': {'fct': alarmStatus_setOpen, 'url': "kitchen doorWindowContact"},
     'kitchen doorShutterContact hk 1': {'fct': alarmStatus_setClose, 'url': "kitchen doorShutterContact"},
@@ -91,31 +123,52 @@ jeedomUrl = dict({
     'kitchen lightRelay get 1': {'fct': None, 'url': "kitchen lightRelay"},
     'kitchen lightRelay get 0': {'fct': None, 'url': "kitchen lightRelay"},
     'bedroom ping get': {'fct': timeoutReset, 'url': "bedroom"},
-    'bedroom parentsShutterButton hk 0': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=167'},
-    'bedroom parentsShutterButton hk 1': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=165'},
-    'bedroom parentsShutterButton hk 2': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=166'},
+    'bedroom parentsShutterButton hk 0': {'fct': httpRequest,
+                                          'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=167'},
+    'bedroom parentsShutterButton hk 1': {'fct': httpRequest,
+                                          'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=165'},
+    'bedroom parentsShutterButton hk 2': {'fct': httpRequest,
+                                          'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=166'},
     'bedroom parentsWindowContact hk 1': {'fct': alarmStatus_setClose, 'url': "bedroom parentsWindowContact"},
     'bedroom parentsWindowContact hk 0': {'fct': alarmStatus_setOpen, 'url': "bedroom parentsWindowContact"},
     'bedroom parentsShutterContact hk 1': {'fct': alarmStatus_setClose, 'url': "bedroom parentsShutterContact"},
     'bedroom parentsShutterContact hk 0': {'fct': alarmStatus_setOpen, 'url': "bedroom parentsShutterContact"},
-    'bedroom ellisShutterButton hk 0': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=162'},
-    'bedroom ellisShutterButton hk 1': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=160'},
-    'bedroom ellisShutterButton hk 2': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=161'},
+    'bedroom ellisShutterButton hk 0': {'fct': httpRequest,
+                                        'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=162'},
+    'bedroom ellisShutterButton hk 1': {'fct': httpRequest,
+                                        'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=160'},
+    'bedroom ellisShutterButton hk 2': {'fct': httpRequest,
+                                        'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=161'},
     'bedroom ellisWindowContact hk 1': {'fct': alarmStatus_setClose, 'url': "bedroom ellisWindowContact"},
     'bedroom ellisWindowContact hk 0': {'fct': alarmStatus_setOpen, 'url': "bedroom ellisWindowContact"},
     'bedroom ellisShutterContact hk 1': {'fct': alarmStatus_setClose, 'url': "bedroom ellisShutterContact"},
     'bedroom ellisShutterContact hk 0': {'fct': alarmStatus_setOpen, 'url': "bedroom ellisShutterContact"},
-    'bedroom desktopShutterButton hk 0': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=172'},
-    'bedroom desktopShutterButton hk 1': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=170'},
-    'bedroom desktopShutterButton hk 2': {'fct': httpRequest, 'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=171'},
+    'bedroom desktopShutterButton hk 0': {'fct': httpRequest,
+                                          'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=172'},
+    'bedroom desktopShutterButton hk 1': {'fct': httpRequest,
+                                          'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=170'},
+    'bedroom desktopShutterButton hk 2': {'fct': httpRequest,
+                                          'url': 'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=171'},
     'bedroom desktopWindowContact hk 1': {'fct': alarmStatus_setClose, 'url': "bedroom desktopWindowContact"},
     'bedroom desktopWindowContact hk 0': {'fct': alarmStatus_setOpen, 'url': "bedroom desktopWindowContact"},
     'bedroom desktopShutterContact hk 1': {'fct': alarmStatus_setClose, 'url': "bedroom desktopShutterContact"},
     'bedroom desktopShutterContact hk 0': {'fct': alarmStatus_setOpen, 'url': "bedroom desktopShutterContact"},
     'bedroom lightRelay get 1': {'fct': None, 'url': "bedroom lightRelay"},
-    'bedroom lightRelay get 0': {'fct': None, 'url': "bedroom lightRelay"}
+    'bedroom lightRelay get 0': {'fct': None, 'url': "bedroom lightRelay"},
+    'ext ping get': {'fct': timeoutReset, 'url': "ext"},
+    'ext waterMainRelay get 0': {'fct': None, 'url': "ext waterMainRelay"},
+    'ext waterMainRelay get 1': {'fct': None, 'url': "ext waterMainRelay"},
+    'ext waterGardenRelay get 0': {'fct': None, 'url': "ext waterGardenRelay"},
+    'ext waterGardenRelay get 1': {'fct': None, 'url': "ext waterGardenRelay"},
+    'ext waterSideRelay get 0': {'fct': None, 'url': "ext waterSideRelay"},
+    'ext waterSideRelay get 1': {'fct': None, 'url': "ext waterSideRelay"},
+    'ext waterEastRelay get 0': {'fct': None, 'url': "ext waterEastRelay"},
+    'ext waterEastRelay get 1': {'fct': None, 'url': "ext waterEastRelay"},
+    'ext waterWestRelay get 0': {'fct': None, 'url': "ext waterWestRelay"},
+    'ext waterWestRelay get 1': {'fct': None, 'url': "ext waterWestRelay"},
+    'ext waterSouthRelay get 0': {'fct': None, 'url': "ext waterSouthRelay"},
+    'ext waterSouthRelay get 1': {'fct': None, 'url': "ext waterSouthRelay"}
 })
-
 
 alarmStatus = dict({
     'dining windowWindowContact': True,
@@ -135,9 +188,9 @@ alarmStatus = dict({
     'bedroom desktopShutterContact': True
 })
 
-
 alarmInitialStatus = alarmStatus.copy()
 alarmIsEnabled = False
+
 
 def log(msg):
     print(time.strftime('%Y/%m/%d %H:%M:%S: ') + msg)
@@ -178,7 +231,13 @@ class Serial2Http(threading.Thread):
                         if nodeList[node]['fd'].isOpen() is False:
                             log("Opening " + nodeList[node]['fd'].port)
                             # log(nodeList[node]['fd'].get_settings())
+                            nodeList[nodeSerial]['fd'].baudrate = 9600
                             nodeList[node]['fd'].open()
+                            time.sleep(0.1)
+                            nodeList[node]['fd'].close()
+                            nodeList[nodeSerial]['fd'].baudrate = 115200
+                            nodeList[node]['fd'].open()
+                            time.sleep(0.1)
                             nodeList[node]['fd'].flushInput()
                     if nodeList[node]['fd'].isOpen() is True:
                         if 0 < nodeList[node]['fd'].inWaiting():
@@ -186,7 +245,7 @@ class Serial2Http(threading.Thread):
                             if "" != line:
                                 if line in jeedomUrl:
                                     if jeedomUrl[line]['fct'] is not None:
-                                        #log("Serial CMD=" + line)
+                                        # log("Serial CMD=" + line)
                                         jeedomUrl[line]['fct'](jeedomUrl[line]['url'])
                                         nodeList[node]['cmdCnt'] += 1
                                 else:
@@ -197,27 +256,30 @@ class Serial2Http(threading.Thread):
                                             cmd = cmd + " " + token
                                         if cmd in jeedomUrl:
                                             if jeedomUrl[cmd]['fct'] is not None:
-                                                #log("Serial CMD-1=" + line + " (" + cmd + ")")
+                                                # log("Serial CMD-1=" + line + " (" + cmd + ")")
                                                 jeedomUrl[cmd]['fct'](jeedomUrl[cmd]['url'])
                                                 nodeList[node]['cmdCnt'] += 1
                                         else:
                                             log("ERROR: Serial CMD '" + line + "' (" + cmd + ") not found !")
                                     else:
                                         log("ERROR: Serial CMD '" + line + "' not found and too short")
-                        if 0 == loopNb % 100:
-                            nodeList[node]['fd'].write(("\n\n" + node + " ping get\n\n").encode('utf-8'))
-                            nodeList[node]['fd'].flush()
+                        if 0 == loopNb % 500:
+                            nodeList[node]['fd'].write(("\n\n" + node + " ping get\n").encode('utf-8'))
+                            # log("Write ping to node " + node)
+                            nodeList[node]['fd'].flushOutput()
                 except Exception as e:
                     log("ERROR Exception: " + str(e))
                     nodeList[node]['fd'].close()
                 timeoutCheck(node)
-            loopNb += 1
             if alarmIsEnabled is True:
                 if alarmStatus != alarmInitialStatus:
                     sendSMS("ALARM: " + str(alarmStatus))
                     alarmIsEnabled = False
             else:
                 alarmInitialStatus = alarmStatus.copy()
+            loopNb += 1
+            if 1000000 <= loopNb:
+                loopNb = 0
             time.sleep(0.01)
 
     def stop(self):
