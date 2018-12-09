@@ -9,6 +9,7 @@ import serial
 import signal
 import sys
 import urllib.parse
+import datetime
 
 nodeList = dict(
     safety={'port': '/dev/safety', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0},
@@ -44,11 +45,23 @@ def httpRequest(url):
 
 
 def alarmStatus_setClose(key):
+    global alarmStatus
     alarmStatus[key] = True
 
 
 def alarmStatus_setOpen(key):
+    global alarmStatus
     alarmStatus[key] = False
+
+
+def moveStatus_setStated(key):
+    global moveStatus
+    moveStatus[key] = True
+
+
+def moveStatus_setMoving(key):
+    global moveStatus
+    moveStatus[key] = False
 
 
 def timeoutCheck(node_):
@@ -68,12 +81,12 @@ def timeoutReset(node_):
 
 jeedomUrl = dict({
     'safety ping get': {'fct': timeoutReset, 'url': "safety"},
-    'safety moveCoridorContact hk 0': {'fct': None, 'url': "safety moveCoridorContact"},
-    'safety moveCoridorContact hk 1': {'fct': None, 'url': "safety moveCoridorContact"},
-    'safety moveDiningContact hk 0': {'fct': None, 'url': "safety moveDiningContact"},
-    'safety moveDiningContact hk 1': {'fct': None, 'url': "safety moveDiningContact"},
-    'safety moveEntryContact hk 0': {'fct': None, 'url': "safety moveEntryContact"},
-    'safety moveEntryContact hk 1': {'fct': None, 'url': "safety moveEntryContact"},
+    'safety moveCoridorContact hk 0': {'fct': moveStatus_setMoving, 'url': "safety moveCoridorContact"},
+    'safety moveCoridorContact hk 1': {'fct': moveStatus_setStated, 'url': "safety moveCoridorContact"},
+    'safety moveDiningContact hk 0': {'fct': moveStatus_setMoving, 'url': "safety moveDiningContact"},
+    'safety moveDiningContact hk 1': {'fct': moveStatus_setStated, 'url': "safety moveDiningContact"},
+    'safety moveEntryContact hk 0': {'fct': moveStatus_setStated, 'url': "safety moveEntryContact"},
+    'safety moveEntryContact hk 1': {'fct': moveStatus_setStated, 'url': "safety moveEntryContact"},
     'safety moveRelay get 0': {'fct': None, 'url': "safety moveRelay"},
     'safety moveRelay get 1': {'fct': None, 'url': "safety moveRelay"},
     'safety out0Relay get 0': {'fct': None, 'url': "safety out0Relay"},
@@ -188,8 +201,18 @@ alarmStatus = dict({
     'bedroom desktopShutterContact': True
 })
 
+moveStatus = dict({
+    'safety moveCoridorContact': True,
+    'safety moveDiningContact': True,
+    'safety moveEntryContact': True
+})
+
 alarmInitialStatus = alarmStatus.copy()
 alarmIsEnabled = False
+alarmTriggered = False
+alarmTimeout = 0
+presenceIsEnabled = False
+moveIsEnabled = True
 
 
 def log(msg):
@@ -213,6 +236,14 @@ def sendAlert(msg):
     sendEmail(msg)
 
 
+def writeSerial(node_, msg):
+    global nodeList
+    if nodeList[node_]['fd'].isOpen() is True:
+        nodeList[node_]['fd'].write(("\n\n" + node_ + " " + msg + "\n").encode('utf-8'))
+        # log("Write ping to node " + node)
+        nodeList[node_]['fd'].flushOutput()
+
+
 class Serial2Http(threading.Thread):
     def __init__(self, name):
         self.is_loopEnabled = True
@@ -223,7 +254,13 @@ class Serial2Http(threading.Thread):
         global alarmStatus
         global alarmInitialStatus
         global alarmIsEnabled
+        global alarmTriggered
+        global alarmTimeout
+        global presenceIsEnabled
+        global moveStatus
+        global moveIsEnabled
         loopNb = 0
+        moveTimeout = 0
         while self.is_loopEnabled is True:
             for node in nodeList:
                 try:
@@ -264,19 +301,68 @@ class Serial2Http(threading.Thread):
                                     else:
                                         log("ERROR: Serial CMD '" + line + "' not found and too short")
                         if 0 == loopNb % 500:
-                            nodeList[node]['fd'].write(("\n\n" + node + " ping get\n").encode('utf-8'))
-                            # log("Write ping to node " + node)
-                            nodeList[node]['fd'].flushOutput()
+                            writeSerial(node, "ping get")
                 except Exception as e:
                     log("ERROR Exception: " + str(e))
                     nodeList[node]['fd'].close()
                 timeoutCheck(node)
             if alarmIsEnabled is True:
-                if alarmStatus != alarmInitialStatus:
-                    sendSMS("ALARM: " + str(alarmStatus))
-                    alarmIsEnabled = False
+                if alarmTriggered is True:
+                    if 0 == loopNb % 50:
+                        if 10*60 < alarmTimeout:
+                            alarmTriggered = False
+                            writeSerial("safety", "buzzerRelay set 0")
+                        else:
+                            alarmTimeout = alarmTimeout + 1
+                            writeSerial("safety", "buzzerRelay set 1")
+                else:
+                    if alarmStatus != alarmInitialStatus:
+                        msg = ""
+                        for sensor in alarmStatus:
+                            if alarmStatus[sensor] != alarmInitialStatus[sensor]:
+                                msg += sensor + "=" + alarmStatus[sensor] + ", "
+                        alarmTriggered = True
+                        alarmTimeout = 0
+                        writeSerial("safety", "buzzerRelay set 1")
+                        sendAlert("ALARM contact: " + msg)
+                    elif moveIsEnabled is True:
+                        for sensor in moveStatus:
+                            if moveStatus[sensor] is False:
+                                alarmTriggered = True
+                                alarmTimeout = 0
+                                writeSerial("safety", "buzzerRelay set 1")
+                                sendAlert("ALARM move: " + sensor)
             else:
                 alarmInitialStatus = alarmStatus.copy()
+            if moveIsEnabled is True:
+                if 0 == loopNb % 50:
+                    try:
+                        writeSerial("safety", "moveRelay set 1")
+                    except Exception as e:
+                        log("ERROR Exception: " + str(e))
+                    if datetime.datetime.now().hour >= 23 or datetime.datetime.now().hour <= 6:
+                        for sensor in moveStatus:
+                            if moveStatus[sensor] is False:
+                                if "safety moveCoridorContact" == sensor:
+                                    writeSerial("bedroom", "lightRelay set 1")
+                                    moveTimeout = 0
+                                elif "safety moveDiningContact" == sensor:
+                                    writeSerial("dining", "lightRelay set 1")
+                                    moveTimeout = 0
+                                elif "safety moveEntryContact" == sensor:
+                                    writeSerial("kitchen", "lightRelay set 0")
+                    if 60 < moveTimeout:
+                        writeSerial("bedroom", "lightRelay set 0")
+                        writeSerial("dining", "lightRelay set 0")
+                        writeSerial("kitchen", "lightRelay set 0")
+                    else:
+                        moveTimeout = moveTimeout + 1
+            else:
+                if 0 == loopNb % 50:
+                    try:
+                        writeSerial("safety", "moveRelay set 0")
+                    except Exception as e:
+                        log("ERROR Exception: " + str(e))
             loopNb += 1
             if 1000000 <= loopNb:
                 loopNb = 0
@@ -301,16 +387,22 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        self.wfile.write(resp.encode())
+        self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
 
     def error404(self, resp: str):
         self.send_response(404)
         self.end_headers()
-        self.wfile.write(resp.encode())
+        self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
 
     def do_GET(self):
         global nodeList
+        global alarmStatus
         global alarmIsEnabled
+        global alarmTriggered
+        global alarmTimeout
+        global presenceIsEnabled
+        global moveIsEnabled
+        global moveStatus
         urlTokens = self.path.split('/')
         urlTokensLen = len(urlTokens)
         log(str(urlTokens))
@@ -332,15 +424,55 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             self.error404("No command for node: " + node)
                     elif "lbgate" == node:
                         if 3 < urlTokensLen:
-                            if "alarmstatus" == urlTokens[3]:
-                                self.ok200(str(alarmStatus))
-                            elif "alarmenable" == urlTokens[3]:
-                                alarmIsEnabled = True
-                                self.ok200("Alarm is enabled: " + str(alarmStatus))
-                            elif "alarmdisable" == urlTokens[3]:
-                                alarmIsEnabled = False
-                                self.ok200("Alarm is disabled")
-                            elif "nodestatus" == urlTokens[3]:
+                            if "alarm" == urlTokens[3]:
+                                if 4 < urlTokensLen:
+                                    if "enable" == urlTokens[4]:
+                                        alarmIsEnabled = True
+                                        alarmTriggered = False
+                                        self.ok200("Alarm is enabled: " +
+                                                   "<br/>" + "Contacts = " + str(alarmStatus) +
+                                                   "<br/>" + "Move = " + str(moveStatus))
+                                    elif "disable" == urlTokens[4]:
+                                        alarmIsEnabled = False
+                                        alarmTriggered = False
+                                        self.ok200("Alarm is disabled")
+                                    else:
+                                        self.ok200("Alarm is = " + str(alarmIsEnabled) +
+                                                   "<br/>Trigger = " + str(alarmTriggered) +
+                                                   "<br/>Timer = " + str(alarmTimeout) +
+                                                   "<br/>Contacts = " + str(alarmStatus) +
+                                                   "<br/>Move = " + str(moveStatus))
+                                else:
+                                    self.ok200("Alarm is = " + str(alarmIsEnabled) +
+                                               "<br/>Trigger = " + str(alarmTriggered) +
+                                               "<br/>Timer = " + str(alarmTimeout) +
+                                               "<br/>Contacts = " + str(alarmStatus) +
+                                               "<br/>Move = " + str(moveStatus))
+                            elif "presence" == urlTokens[3]:
+                                if 4 < urlTokensLen:
+                                    if "enable" == urlTokens[4]:
+                                        presenceIsEnabled = True
+                                        self.ok200("Presence is enabled")
+                                    elif "disable" == urlTokens[4]:
+                                        presenceIsEnabled = False
+                                        self.ok200("Presence is disabled")
+                                    else:
+                                        self.ok200("Presence is enabled = " + str(presenceIsEnabled))
+                                else:
+                                    self.ok200("Presence is enabled = " + str(presenceIsEnabled))
+                            elif "move" == urlTokens[3]:
+                                if 4 < urlTokensLen:
+                                    if "enable" == urlTokens[4]:
+                                        moveIsEnabled = True
+                                        self.ok200("Move is enabled")
+                                    elif "disable" == urlTokens[4]:
+                                        moveIsEnabled = False
+                                        self.ok200("Move is disabled")
+                                    else:
+                                        self.ok200("Move is enabled = " + str(moveIsEnabled) + "<br/>" + "Move = " + str(moveStatus))
+                                else:
+                                    self.ok200("Move is enabled = " + str(moveIsEnabled) + "<br/>" + "Move = " + str(moveStatus))
+                            elif "node" == urlTokens[3]:
                                 self.ok200(str(nodeList))
                             elif "sendsms" == urlTokens[3]:
                                 if 4 < urlTokensLen:
