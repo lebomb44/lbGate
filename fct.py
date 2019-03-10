@@ -47,16 +47,21 @@ def send_alert(msg):
 
 def write_serial(node_, msg):
     """ Write the serial port if already open """
-    if settings.node_list[node_]['fd'].isOpen() is True:
-        settings.node_list[node_]['fd'].write(("\n\n" + node_ + " " + msg + "\n").encode('utf-8'))
-        # log("Write ping to node " + node)
-        settings.node_list[node_]['fd'].flushOutput()
+    try:
+        if settings.node_list[node_]['fd'].isOpen() is True:
+            settings.node_list[node_]['fd'].write((node_ + " " + msg + "\n").encode('utf-8'))
+            # log("Write serial to node " + node)
+            settings.node_list[node_]['fd'].flush()
+    except Exception as ex:
+        log("ERROR write_serial Exception: " + str(ex))
 
 
 def contact_status_set_close(key):
     """ Set contact status to 'close' """
-    settings.contact_status[key] = True
-
+    if key in settings.contact_status:
+        settings.contact_status[key] = True
+    else:
+        log("ERROR contact_status_set_close: " + key + " not in settings.contact_status")
 
 def log_contact_status_set_close(key):
     """ Set contact status to 'close' and print log message """
@@ -66,7 +71,10 @@ def log_contact_status_set_close(key):
 
 def contact_status_set_open(key):
     """ Set contact status to 'open' """
-    settings.contact_status[key] = False
+    if key in settings.contact_status:
+        settings.contact_status[key] = False
+    else:
+        log("ERROR contact_status_set_open: " + key + " not in settings.contact_status")
 
 
 def log_contact_status_set_open(key):
@@ -77,13 +85,19 @@ def log_contact_status_set_open(key):
 
 def move_status_set_stated(key):
     """ Set move status to 'moving' """
-    settings.move_status[key] = True
+    if key in settings.move_status:
+        settings.move_status[key] = True
+    else:
+        log("ERROR move_status_set_stated: " + key + " not in settings.move_status")
     # log("Move " + key + " is at " + str(settings.move_status[key]))
 
 
 def move_status_set_moving(key):
     """ Set move status to 'not moving' """
-    settings.move_status[key] = False
+    if key in settings.move_status:
+        settings.move_status[key] = False
+    else:
+        log("ERROR move_status_set_moving: " + key + " not in settings.move_status")
     # log("Move " + key + " is at " + str(settings.move_status[key]))
 
 
@@ -94,7 +108,24 @@ def timeout_check(node_):
     if settings.MAX_NODE_ERRORS == settings.node_list[node_]['errorCnt']:
         send_alert("Timeout on serial node " + node_)
         settings.node_list[node_]['errorCnt'] += 1
-    #log("=== Checked " + node_ + " timeout = " + str(settings.node_list[node_]['errorCnt']))
+        try:
+            if settings.node_list[node_]['fd'].isOpen() is True:
+                settings.node_list[node_]['fd'].close()
+                time.sleep(1.0)
+            log("Opening " + settings.node_list[node_]['fd'].port)
+            # log(node_list[node_]['fd'].get_settings())
+            settings.node_list[node_]['fd'].baudrate = 9600
+            settings.node_list[node_]['fd'].open()
+            time.sleep(1.0)
+            settings.node_list[node_]['fd'].close()
+            settings.node_list[node_]['fd'].baudrate = 115200
+            settings.node_list[node_]['fd'].open()
+            time.sleep(3.0)
+            settings.node_list[node_]['fd'].reset_input_buffer()
+            settings.node_list[node_]['fd'].reset_output_buffer()
+            #log("=== Checked " + node_ + " timeout = " + str(settings.node_list[node_]['errorCnt']))
+        except Exception as ex:
+            log("ERROR timeout_check Exception: " + str(ex))
 
 
 def timeout_reset(node_, value):

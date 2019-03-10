@@ -33,14 +33,11 @@ def run():
                     elif sensor == "safety moveEntryContact":
                         fct.write_serial("kitchen", "lightRelay set 1")
                         move_timeout = 0
-        if move_timeout > 20:
-            fct.write_serial("bedroom", "lightRelay set 0")
-            fct.write_serial("dining", "lightRelay set 0")
-            fct.write_serial("kitchen", "lightRelay set 0")
-        else:
-            move_timeout = move_timeout + 1
+        if move_timeout < 30:
+            move_timeout = move_timeout + 1 
+            if move_timeout > 20:
+                fct.write_serial("bedroom", "lightRelay set 0")
+                fct.write_serial("dining", "lightRelay set 0")
+                fct.write_serial("kitchen", "lightRelay set 0")
     else:
-        try:
-            fct.write_serial("safety", "moveRelay set 0")
-        except Exception as ex:
-            fct.log("ERROR Exception: " + str(ex))
+        fct.write_serial("safety", "moveRelay set 0")

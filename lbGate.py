@@ -32,17 +32,20 @@ class Serial2Http(threading.Thread):
                             # fct.log(node_list[node]['fd'].get_settings())
                             settings.node_list[node]['fd'].baudrate = 9600
                             settings.node_list[node]['fd'].open()
-                            time.sleep(0.1)
+                            time.sleep(1.0)
                             settings.node_list[node]['fd'].close()
                             settings.node_list[node]['fd'].baudrate = 115200
                             settings.node_list[node]['fd'].open()
-                            time.sleep(0.1)
-                            settings.node_list[node]['fd'].flushInput()
+                            time.sleep(3.0)
+                            settings.node_list[node]['fd'].reset_input_buffer()
+                            settings.node_list[node]['fd'].reset_output_buffer()
                     if settings.node_list[node]['fd'].isOpen() is True:
                         line = ""
                         while settings.node_list[node]['fd'].inWaiting() > 0:
                             try:
                                 cserial = settings.node_list[node]['fd'].read(1).decode("utf-8")
+                                #if "kitchen" == node:
+                                #    print(cserial, end='', flush=True)
                                 if cserial == "\n":
                                     line = settings.node_list[node]['line'].rstrip()
                                     settings.node_list[node]['line'] = ""
@@ -53,12 +56,18 @@ class Serial2Http(threading.Thread):
                             except Exception as ex:
                                 settings.node_list[node]['line'] = ""
                                 fct.log("ERROR while decoding data on " + settings.node_list[node]['fd'].port)
+                                try:
+                                    # OCM settings.node_list[node]['fd'].close()
+                                    pass
+                                except:
+                                    pass
                         if line != "":
                             if line in settings.jeedom_url:
                                 if settings.jeedom_url[line]['fct'] is not None:
                                     # fct.log("Serial CMD=" + line)
                                     settings.jeedom_url[line]['fct'](settings.jeedom_url[line]['url'])
-                                    settings.node_list[node]['cmdCnt'] += 1
+                                    settings.node_list[node]['cmdRxCnt'] += 1
+                                fct.timeout_reset(node, "0")
                             else:
                                 line_array = line.split(" ")
                                 if len(line_array) > 2:
@@ -69,16 +78,22 @@ class Serial2Http(threading.Thread):
                                         if settings.jeedom_url[cmd]['fct'] is not None:
                                             # fct.log("Serial CMD-1=" + line + " (" + cmd + ")")
                                             settings.jeedom_url[cmd]['fct'](settings.jeedom_url[cmd]['url'], line_array[-1])
-                                            settings.node_list[node]['cmdCnt'] += 1
+                                            settings.node_list[node]['cmdRxCnt'] += 1
+                                        fct.timeout_reset(node, "0")
                                     else:
-                                        fct.log("ERROR: Serial CMD " + line + " (" + cmd + ") not found !")
+                                        fct.log("ERROR: Serial CMD \"" + line + "\" or \"" + cmd + "\" not found !")
                                 else:
-                                    fct.log("ERROR: Serial CMD " + line + " not found and too short")
+                                    fct.log("ERROR: Serial CMD \"" + line + "\" not found and too short")
                         if loop_nb % 500 == 0:
                             fct.write_serial(node, "ping get")
+                            fct.log("PING to node " + node)
+                            settings.node_list[node]['pingTxCnt'] += 1
                 except Exception as ex:
                     fct.log("ERROR Exception: " + str(ex))
-                    settings.node_list[node]['fd'].close()
+                    try:
+                        settings.node_list[node]['fd'].close()
+                    except Exception as ex:
+                        fct.log("ERROR Exception: " + str(ex))
                 fct.timeout_check(node)
             if loop_nb % 50 == 0:
                 alarm.run()
@@ -125,12 +140,11 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                     node = url_tokens[2]
                     if node in settings.node_list:
                         if url_tokens_len > 3:
-                            cmd = node + " " + url_tokens[3]
+                            cmd = url_tokens[3]
                             if url_tokens_len > 4:
                                 for token in url_tokens[4:]:
                                     cmd = cmd + " " + token
-                            settings.node_list[node]['fd'].write(("\n\n" + cmd + "\n\n").encode('utf-8'))
-                            settings.node_list[node]['fd'].flush()
+                            fct.write_serial(node, cmd)
                             self.ok200(cmd)
                         else:
                             self.error404("No command for node: " + node)

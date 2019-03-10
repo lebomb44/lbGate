@@ -22,11 +22,11 @@ EMAIL_URL = ('http://localhost/core/api/jeeApi.php?'
 
 
 node_list = dict(
-    safety={'port': '/dev/safety', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0, 'line': ""},
-    dining={'port': '/dev/dining', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0, 'line': ""},
-    kitchen={'port': '/dev/kitchen', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0, 'line': ""},
-    bedroom={'port': '/dev/bedroom', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0, 'line': ""},
-    ext={'port': '/dev/ext', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdCnt': 0, 'line': ""})
+    safety={'port': '/dev/safety', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdRxCnt': 0, 'pingTxCnt': 0, 'line': ""},
+    dining={'port': '/dev/dining', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdRxCnt': 0, 'pingTxCnt': 0, 'line': ""},
+    kitchen={'port': '/dev/kitchen', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdRxCnt': 0, 'pingTxCnt': 0, 'line': ""},
+    bedroom={'port': '/dev/bedroom', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdRxCnt': 0, 'pingTxCnt': 0, 'line': ""},
+    ext={'port': '/dev/ext', 'fd': serial.Serial(), 'errorCnt': 0, 'cmdRxCnt': 0, 'pingTxCnt': 0, 'line': ""})
 
 
 for node_serial in node_list:
@@ -56,10 +56,14 @@ jeedom_url = dict({
         {'fct': fct.move_status_set_moving, 'url': "safety moveEntryContact"},
     'safety moveEntryContact hk 1':
         {'fct': fct.move_status_set_stated, 'url': "safety moveEntryContact"},
+    'safety doorEntryContact hk 1': {'fct': fct.contact_status_set_close, 'url': "safety doorEntryContact"},
+    'safety doorEntryContact hk 0': {'fct': fct.contact_status_set_open, 'url': "safety doorEntryContact"},
+    'safety lightAlarm get 0': {'fct': None, 'url': "safety lightAlarm"},
+    'safety lightAlarm get 1': {'fct': None, 'url': "safety lightAlarm"},
     'safety moveRelay get 0': {'fct': None, 'url': "safety moveRelay"},
     'safety moveRelay get 1': {'fct': None, 'url': "safety moveRelay"},
-    'safety out0Relay get 0': {'fct': None, 'url': "safety out0Relay"},
-    'safety out0Relay get 1': {'fct': None, 'url': "safety out0Relay"},
+    'safety buzzerRelay get 0': {'fct': None, 'url': "safety buzzerRelay"},
+    'safety buzzerRelay get 1': {'fct': None, 'url': "safety buzzerRelay"},
     'safety out1Relay get 0': {'fct': None, 'url': "safety out1Relay"},
     'safety out1Relay get 1': {'fct': None, 'url': "safety out1Relay"},
     'safety out2Relay get 0': {'fct': None, 'url': "safety out2Relay"},
@@ -84,6 +88,10 @@ jeedom_url = dict({
     'dining tvShutterContact hk 0': {'fct': fct.contact_status_set_open, 'url': "dining tvShutterContact"},
     'dining lightRelay get 1': {'fct': None, 'url': "dining lightRelay"},
     'dining lightRelay get 0': {'fct': None, 'url': "dining lightRelay"},
+    'dining tempSensors hk 2892A7FB05000073': {'fct': fct.temp_set, 'url': "dining c0Temp"},
+    'dining tempSensors hk 28D2AFFB05000038': {'fct': fct.temp_set, 'url': "dining c1Temp"},
+    'dining tempSensors hk 2813CEFB0500004C': {'fct': fct.temp_set, 'url': "dining c2Temp"},
+    'dining tempSensors hk 28FF6CC7070000BD': {'fct': fct.temp_set, 'url': "dining c3Temp"},
     'kitchen ping get': {'fct': fct.timeout_reset, 'url': "kitchen"},
     'kitchen windowWindowContact hk 1': {'fct': fct.contact_status_set_close, 'url': "kitchen windowWindowContact"},
     'kitchen windowWindowContact hk 0': {'fct': fct.contact_status_set_open, 'url': "kitchen windowWindowContact"},
@@ -181,7 +189,8 @@ contact_status = dict({
     'bedroom desktopWindowContact': True,
     'bedroom desktopShutterContact': True,
     'bedroom basementWindowContact': True,
-    'bedroom basementShutterContact': True
+    'bedroom basementShutterContact': True,
+    'safety doorEntryContact': True
 })
 
 
@@ -210,20 +219,24 @@ def run():
     global runLoop
     try:
         f = open("/dev/shm/lbGate.settings", "w")
-        f.write("###########################\n")
+        f.write("########################### pySerial=" + serial.VERSION + "\n")
         f.write("### " + time.strftime('%Y/%m/%d %H:%M:%S') + " ###\n")
         f.write("# contact_status =\n")
+        f.write("    # node contact = current value | alarm value\n")
         for key, value in contact_status.items():
-            f.write("     " + key + " = " + str(value) + " | alarm_initial_status = \n")# + str(alarm_initial_status[key]) + "\n")
+            f.write("    " + key + " = " + str(value) + " | " + str(alarm_initial_status[key]) + "\n")
         f.write("# move_status =\n")
         for key, value in move_status.items():
-            f.write("     " + key + " = " + str(value) + "\n")
-        f.write("# alarm_initial_status = " + str(alarm_initial_status) + "\n")
+            f.write("    " + key + " = " + str(value) + "\n")
         f.write("# alarm_is_enabled = " + str(alarm_is_enabled) + "\n")
         f.write("# alarm_triggered = " + str(alarm_triggered) + "\n")
         f.write("# alarm_timeout = " + str(alarm_timeout) + "\n")
         f.write("# presence_is_enabled = " + str(presence_is_enabled) + "\n")
         f.write("# move_is_enabled = " + str(move_is_enabled) + "\n")
+        f.write("# node_list =\n")
+        f.write("    # node = isOpen | cmdRx | pingTx | errors\n")
+        for key, value in node_list.items():
+            f.write("    " + key + " = " + str(value['fd'].isOpen()) + " | " + str(value['cmdRxCnt']) + " | " + str(value['pingTxCnt']) + " | " + str(value['errorCnt']) + "\n")
         f.write("- runLoop = " + str(runLoop) + "\n")
         f.write("\n")
         f.close()
