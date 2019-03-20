@@ -22,7 +22,7 @@ def http_request(url):
     """ Do HTTP request to the URL """
     try:
         log("URL call: " + url)
-        requests.get(url, timeout=0.1)
+        requests.get(url, timeout=1.0)
     except requests.exceptions.RequestException as ex:
         log("ERROR http_request: " + str(ex))
 

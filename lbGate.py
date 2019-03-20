@@ -22,7 +22,7 @@ class Serial2Http(threading.Thread):
         threading.Thread.__init__(self, name=name)
 
     def run(self):
-        loop_nb = 0
+        loop_nb = 1
         while self.is_loop_enabled is True:
             for node in settings.node_list:
                 try:
@@ -85,8 +85,8 @@ class Serial2Http(threading.Thread):
                                 else:
                                     fct.log("ERROR: Serial CMD \"" + line + "\" not found and too short")
                         if loop_nb % 500 == 0:
-                            fct.write_serial(node, "ping get")
-                            fct.log("PING to node " + node)
+                            # fct.write_serial(node, "ping get")
+                            # OCM fct.log("PING to node " + node)
                             settings.node_list[node]['pingTxCnt'] += 1
                 except Exception as ex:
                     fct.log("ERROR Exception: " + str(ex))
@@ -145,7 +145,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                 for token in url_tokens[4:]:
                                     cmd = cmd + " " + token
                             fct.write_serial(node, cmd)
-                            self.ok200(cmd)
+                            self.ok200(node + " " + cmd)
                         else:
                             self.error404("No command for node: " + node)
                     elif node == "lbgate":
