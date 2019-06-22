@@ -85,4 +85,7 @@ def temp_set(node_, cmd_, arg_array_):
 def timeout_reset(node_, cmd_, arg_array_):
     """ Reset timeout to zero """
     #log("### Reset of " + node_ + " timeout")
+    if settings.node_list[node_].errorCnt > settings.node_list[node_].errorCntMax:
+        settings.node_list[node_].errorCntMax = settings.node_list[node_].errorCnt
     settings.node_list[node_].errorCnt = 0
+    settings.node_list[node_].pingRxCnt += 1

@@ -174,13 +174,13 @@ def run():
             for sensorName, sensorValue in nodeValue.items():
                 if 'type' in sensorValue:
                     if "alarm" in sensorValue['type']:
-                        msg = msg + "    " + nodeName + " " + sensorName + " = " + str(sensorValue['val']) + " | " + str(alarm_initial_status[nodeName][sensorName]['val']) + "\n"
+                        msg = msg + "    " + nodeName.rjust(7) + " " + sensorName.rjust(22) + " = " + str(sensorValue['val']) + " | " + str(alarm_initial_status[nodeName][sensorName]['val']) + "\n"
         msg = msg + "# move_status =\n"
         for nodeName, nodeValue in acq.items():
             for sensorName, sensorValue in nodeValue.items():
                 if 'type' in sensorValue:
                     if "move" in sensorValue['type']:
-                        msg = msg + "    " + nodeName + " " + sensorName + " = " + str(sensorValue['val']) + "\n"
+                        msg = msg + "    " + nodeName.rjust(7) + " " + sensorName.rjust(22) + " = " + str(sensorValue['val']) + "\n"
         msg = msg + "# alarm_is_enabled = " + str(alarm_is_enabled) + "\n"
         msg = msg + "# alarm_triggered = " + str(alarm_triggered) + "\n"
         msg = msg + "# alarm_timeout = " + str(alarm_timeout) + "\n"
@@ -188,9 +188,9 @@ def run():
         msg = msg + "# presence_is_enabled = " + str(presence_is_enabled) + "\n"
         msg = msg + "# move_is_enabled = " + str(move_is_enabled) + "\n"
         msg = msg + "# node_list =\n"
-        msg = msg + "    # node = isOpen | openCnt | cmdRx | pingTx | wd / " + str(MAX_NODE_ERRORS) + " | readIter\n"
+        msg = msg + "    #  node =    isOpen |   openCnt |     cmdRx |    pingTx |    pingRx |        wd | Max/" + str(MAX_NODE_ERRORS) + " |  readIter\n"
         for key, value in node_list.items():
-            msg = msg + "    " + key + " = " + str(value.isOpen()) + " | " + str(value.openCnt) + " | " + str(value.cmdRxCnt) + " | " + str(value.pingTxCnt) + " | " + str(value.errorCnt) + " | " + str(value.readIter) + "\n"
+            msg = msg + "    " + key.rjust(7) + " = " + str(value.isOpen()).rjust(9) + " | " + str(value.openCnt).rjust(9) + " | " + str(value.cmdRxCnt).rjust(9) + " | " + str(value.pingTxCnt).rjust(9) + " | " + str(value.pingRxCnt).rjust(9) + " | " + str(value.errorCnt).rjust(9) + " | " + str(value.errorCntMax).rjust(9) + " | " + str(value.readIter).rjust(9) + "\n"
         for key, value in acq.items():
             msgTemp = printTemp(value)
             if "" != msgTemp:

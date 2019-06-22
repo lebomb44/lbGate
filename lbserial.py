@@ -21,8 +21,10 @@ class Serial(threading.Thread):
         self.nodeName = name
         self.fd = io.IOBase()
         self.errorCnt = 0
+        self.errorCntMax = 0
         self.cmdRxCnt = 0
         self.pingTxCnt = 0
+        self.pingRxCnt = 0
         self.line = ""
         self.openCnt = 0
         self.readIter = 0
