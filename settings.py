@@ -6,6 +6,7 @@
 
 
 import time
+import copy
 
 import fct
 import lbserial
@@ -134,7 +135,7 @@ acq = dict({
 })
 
 
-alarm_initial_status = acq.copy()
+alarm_initial_status = copy.deepcopy(acq)
 alarm_is_enabled = False
 alarm_triggered = False
 alarm_timeout = 0

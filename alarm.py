@@ -5,6 +5,8 @@
 """ Move sensor management """
 
 
+import copy
+
 import settings
 import fct
 
@@ -27,6 +29,7 @@ def run():
                     for sensorName, sensorValue in nodeValue.items():
                         if 'type' in sensorValue:
                             if "alarm" in sensorValue['type']:
+                                #fct.log("DEBUG: checking alarm: " + nodeName + "." + sensorName + ": " + str(sensorValue['val']) + " / " + str(settings.alarm_initial_status[nodeName][sensorName]['val']))
                                 if sensorValue['val'] != settings.alarm_initial_status[nodeName][sensorName]['val']:
                                     msg = msg + " " + nodeName + "." + sensorName
                                     settings.alarm_triggered = True
@@ -39,7 +42,11 @@ def run():
                     settings.alarm_stopped = False
                     settings.node_list["safety"].write("buzzerRelay set 1")
                     fct.send_alert("ALARM started:" + msg)
+                else:
+                    settings.node_list["safety"].write("buzzerRelay set 0")
         else:
-            settings.alarm_initial_status = settings.acq.copy()
+            #fct.log("DEBUG: alarm is not enabled. Copying acq to alarm_initial_status")
+            settings.alarm_initial_status = copy.deepcopy(settings.acq)
+            settings.node_list["safety"].write("buzzerRelay set 0")
     except Exception as ex:
         fct.logException(ex)

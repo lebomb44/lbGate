@@ -80,9 +80,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                         settings.alarm_triggered = False
                                         settings.alarm_timeout = 0
                                         settings.alarm_stopped = False
-                                        self.ok200("Alarm is enabled: " +
-                                                   "<br/>" + "Contacts = " + str(settings.contact_status) +
-                                                   "<br/>" + "Move = " + str(settings.move_status))
+                                        self.ok200("Alarm is enabled: ")
                                     elif url_tokens[4] == "disable":
                                         settings.alarm_is_enabled = False
                                         settings.alarm_triggered = False
@@ -93,16 +91,12 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                         self.ok200("Alarm is = " + str(settings.alarm_is_enabled) +
                                                    "<br/>Trigger = " + str(settings.alarm_triggered) +
                                                    "<br/>Timer = " + str(settings.alarm_timeout) +
-                                                   "<br/>Stop = " + str(settings.alarm_stopped) +
-                                                   "<br/>Contacts = " + str(settings.contact_status) +
-                                                   "<br/>Move = " + str(settings.move_status))
+                                                   "<br/>Stop = " + str(settings.alarm_stopped))
                                 else:
                                     self.ok200("Alarm is = " + str(settings.alarm_is_enabled) +
                                                "<br/>Trigger = " + str(settings.alarm_triggered) +
                                                "<br/>Timer = " + str(settings.alarm_timeout) +
-                                               "<br/>Stop = " + str(settings.alarm_stopped) +
-                                               "<br/>Contacts = " + str(settings.contact_status) +
-                                               "<br/>Move = " + str(settings.move_status))
+                                               "<br/>Stop = " + str(settings.alarm_stopped))
                             elif url_tokens[3] == "presence":
                                 if url_tokens_len > 4:
                                     if url_tokens[4] == "enable":
@@ -124,9 +118,9 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                         settings.move_is_enabled = False
                                         self.ok200("Move is disabled")
                                     else:
-                                        self.ok200("Move is enabled = " + str(settings.move_is_enabled) + "<br/>" + "Move = " + str(settings.move_status))
+                                        self.ok200("Move is enabled = " + str(settings.move_is_enabled) + "<br/>" + "Move = ")
                                 else:
-                                    self.ok200("Move is enabled = " + str(settings.move_is_enabled) + "<br/>" + "Move = " + str(settings.move_status))
+                                    self.ok200("Move is enabled = " + str(settings.move_is_enabled) + "<br/>" + "Move = ")
                             elif url_tokens[3] == "node":
                                 self.ok200(str(settings.node_list))
                             elif url_tokens[3] == "sendsms":
