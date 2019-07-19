@@ -16,42 +16,44 @@ import settings
 
 
 class Serial(threading.Thread):
+    """ Class for a serial port """
     def __init__(self, name):
         self.port = "/dev/" + name
-        self.nodeName = name
-        self.fd = io.IOBase()
-        self.errorCnt = 0
-        self.errorCntMax = 0
-        self.cmdRxCnt = 0
-        self.pingTxCnt = 0
-        self.pingRxCnt = 0
+        self.node_name = name
+        self.fd_port = io.IOBase()
+        self.error_cnt = 0
+        self.error_cnt_max = 0
+        self.cmd_rx_cnt = 0
+        self.ping_tx_cnt = 0
+        self.ping_rx_cnt = 0
         self.line = ""
-        self.openCnt = 0
-        self.readIter = 0
+        self.open_cnt = 0
+        self.read_iter = 0
         self.is_loop_enabled = True
         threading.Thread.__init__(self, name=name)
 
     def run(self):
+        """ Cyclic execution to poll for received characters """
         loop_nb = 1
         while self.is_loop_enabled is True:
             try:
-                #fct.log("DEBUG: " + self.nodeName + " loop " + str(loop_nb))
-                if self.isOpen() is False:
+                #fct.log("DEBUG: " + self.node_name + " loop " + str(loop_nb))
+                if self.is_open() is False:
                     self.open()
                     time.sleep(1.0)
-                if self.isOpen() is True:
+                if self.is_open() is True:
                     line = ""
                     cserial = " "
-                    readIter_ = 0
+                    read_iter_ = 0
                     while (len(cserial) > 0) and (self.is_loop_enabled is True):
                         try:
-                            cserial = self.fd.read(1)
+                            cserial = self.fd_port.read(1)
                             if cserial is None:
                                 cserial = ""
                             else:
                                 cserial = cserial.decode(encoding='utf-8', errors='ignore')
                             if len(cserial) > 0:
-                                readIter_ = readIter_ + 1
+                                read_iter_ = read_iter_ + 1
                                 if ord(cserial) == 0:
                                     cserial = ""
                             else:
@@ -67,10 +69,10 @@ class Serial(threading.Thread):
                         except Exception as ex:
                             self.line = ""
                             cserial = ""
-                            fct.logException(ex, msg="ERROR while decoding data on " + self.nodeName)
+                            fct.log_exception(ex, msg="ERROR while decoding data on " + self.node_name)
                             self.close()
-                    if readIter_ > self.readIter:
-                        self.readIter = readIter_
+                    if read_iter_ > self.read_iter:
+                        self.read_iter = read_iter_
                     if line != "":
                         line_array = line.split(" ")
                         # fct.log("DEBUG: line_array=" + str(line_array))
@@ -84,7 +86,7 @@ class Serial(threading.Thread):
                                         try:
                                             settings.acq[node][cmd]['fct'](node, cmd, arg_map)
                                         except Exception as ex:
-                                            fct.logException(ex)
+                                            fct.log_exception(ex)
                                     else:
                                         if len(arg_map) == 2:
                                             if arg_map[0] in settings.acq[node][cmd]:
@@ -102,7 +104,7 @@ class Serial(threading.Thread):
                                                     fct.log("ERROR: " + arg_map[0] + " is not in cmd " + node + "." + cmd)
                                             else:
                                                 fct.log("ERROR: incorrect number of arguments in '" + str(arg_map) + "'. Got " + str(len(arg_map)) + ", expected 2")
-                                    self.cmdRxCnt += 1
+                                    self.cmd_rx_cnt += 1
                                 else:
                                     fct.log("ERROR: " + cmd + " is not in node " + node)
                             else:
@@ -112,9 +114,9 @@ class Serial(threading.Thread):
                     if loop_nb % 500 == 0:
                         self.write("ping get")
                         # fct.log("DEBUG PING to node " + node)
-                        self.pingTxCnt += 1
+                        self.ping_tx_cnt += 1
             except Exception as ex:
-                fct.logException(ex)
+                fct.log_exception(ex)
                 self.close()
             self.timeout_check()
             loop_nb += 1
@@ -124,60 +126,64 @@ class Serial(threading.Thread):
 
 
     def stop(self):
-        fct.log("Stopping " + self.nodeName + " thread...")
+        """ Stop polling loop """
+        fct.log("Stopping " + self.node_name + " thread...")
         self.is_loop_enabled = False
         time.sleep(1.0)
-        fct.log("Closing " + self.nodeName + " node...")
-        if self.isOpen() is True:
-            self.fd.close()
+        fct.log("Closing " + self.node_name + " node...")
+        if self.is_open() is True:
+            self.fd_port.close()
 
-    def isOpen(self):
+    def is_open(self):
+        """ Check if serial port is already open """
         try:
-            ret = fcntl.fcntl(self.fd, fcntl.F_GETFD)
-            return (0 <= ret)
-        except Exception as ex:
+            ret = fcntl.fcntl(self.fd_port, fcntl.F_GETFD)
+            return ret >= 0
+        except:
             return False
 
 
     def open(self):
+        """ Open the serial port """
         try:
-            fct.log("Opening " + self.nodeName)
-            self.fd = open(self.port, "rb+", buffering=0)
-            fd = self.fd.fileno()
-            flag = fcntl.fcntl(fd, fcntl.F_GETFL)
-            fcntl.fcntl(fd, fcntl.F_SETFL, flag | os.O_NONBLOCK)
-            self.openCnt += 1
+            fct.log("Opening " + self.node_name)
+            self.fd_port = open(self.port, "rb+", buffering=0)
+            fd_port = self.fd_port.fileno()
+            flag = fcntl.fcntl(fd_port, fcntl.F_GETFL)
+            fcntl.fcntl(fd_port, fcntl.F_SETFL, flag | os.O_NONBLOCK)
+            self.open_cnt += 1
         except Exception as ex:
-            fct.logException(ex)
+            fct.log_exception(ex)
 
 
     def close(self):
+        """ Close the serial port """
         try:
-            if self.isOpen() is True:
-                fct.log("Closing " + self.nodeName)
-                self.fd.close()
+            if self.is_open() is True:
+                fct.log("Closing " + self.node_name)
+                self.fd_port.close()
         except Exception as ex:
-            fct.logException(ex)
+            fct.log_exception(ex)
 
 
     def write(self, msg):
         """ Write the serial port if already open """
         try:
-            if self.isOpen() is True:
-                self.fd.write((self.nodeName + " " + msg + "\n").encode('utf-8'))
-                # fct.log("Write serial to node " + self.nodeName)
-                self.fd.flush()
+            if self.is_open() is True:
+                self.fd_port.write((self.node_name + " " + msg + "\n").encode('utf-8'))
+                # fct.log("Write serial to node " + self.node_name)
+                self.fd_port.flush()
         except Exception as ex:
             fct.log("ERROR write_serial Exception: " + str(ex))
 
 
     def timeout_check(self):
         """ Check timeout to increment """
-        if settings.MAX_NODE_ERRORS > self.errorCnt:
-            self.errorCnt += 1
-        if settings.MAX_NODE_ERRORS == self.errorCnt:
-            fct.send_alert("Timeout on serial node " + self.nodeName)
-            self.errorCnt += 1
+        if settings.MAX_NODE_ERRORS > self.error_cnt:
+            self.error_cnt += 1
+        if settings.MAX_NODE_ERRORS == self.error_cnt:
+            fct.send_alert("Timeout on serial node " + self.node_name)
+            self.error_cnt += 1
             self.close()
             time.sleep(1.0)
             self.open()

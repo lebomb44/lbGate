@@ -59,9 +59,9 @@ acq = dict({
         'ping': {'val': 0, 'fct': fct.timeout_reset},
         'windowShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
                                 'url': [
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=192',
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=190',
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=191'
+                                    'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=192',
+                                    'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=190',
+                                    'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=191'
                                 ]},
         'windowWindowContact': {'val': 0, 'type': ["alarm"]},
         'windowShutterContact': {'val': 0, 'type': ["alarm"]},
@@ -82,11 +82,11 @@ acq = dict({
         'doorWindowContact': {'val': 0, 'type': ["alarm"]},
         'doorShutterContact': {'val': 0, 'type': ["alarm"]},
         'doorShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
-                                'url': [
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=202',
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=200',
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=201'
-                                ]},
+                              'url': [
+                                  'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=202',
+                                  'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=200',
+                                  'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=201'
+                              ]},
         'lightRelay': {'val': 0},
         'entryRelay': {'val': 0},
         'tempSensors': {'28F4A156070000E5': {'val': 20.0, 'name': "c0", 'type': 'temp'},
@@ -98,35 +98,35 @@ acq = dict({
     'bedroom': {
         'ping': {'val': 0, 'fct': fct.timeout_reset},
         'parentsShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
-                                'url': [
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=167',
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=165',
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=166'
-                                ]},
+                                 'url': [
+                                     'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=167',
+                                     'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=165',
+                                     'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=166'
+                                 ]},
         'parentsWindowContact': {'val': 0, 'type': ["alarm"]},
         'parentsShutterContact': {'val': 0, 'type': ["alarm"]},
         'ellisShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
-                                'url': [
+                               'url': [
                                    'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=162',
                                    'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=160',
                                    'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=161'
-                                ]},
+                               ]},
         'ellisWindowContact': {'val': 0, 'type': ["alarm"]},
         'ellisShutterContact': {'val': 0, 'type': ["alarm"]},
         'desktopShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
-                                'url': [
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=172',
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=170',
-                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=171'
-                                ]},
+                                 'url': [
+                                     'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=172',
+                                     'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=170',
+                                     'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=171'
+                                 ]},
         'desktopWindowContact': {'val': 0, 'type': ["alarm"]},
         'desktopShutterContact': {'val': 0, 'type': ["alarm"]},
         'basementWindowContact': {'val': 0, 'type': ["alarm"]},
         'basementShutterContact': {'val': 0, 'type': ["alarm"]},
         'lightRelay': {'val': 0},
-        'tempSensors': {'287CB2FB050000E7': {'val': 20.0, 'name': "parents" , 'type': 'temp'},
-                        '2861CCFB05000039': {'val': 20.0, 'name': "desktop" , 'type': 'temp'},
-                        '2841825707000030': {'val': 20.0, 'name': "ellis"   , 'type': 'temp'},
+        'tempSensors': {'287CB2FB050000E7': {'val': 20.0, 'name': "parents", 'type': 'temp'},
+                        '2861CCFB05000039': {'val': 20.0, 'name': "desktop", 'type': 'temp'},
+                        '2841825707000030': {'val': 20.0, 'name': "ellis", 'type': 'temp'},
                         '287288AE070000DB': {'val': 20.0, 'name': "bathroom", 'type': 'temp'},
                         '28C6A9FB05000023': {'val': 20.0, 'name': "corridor", 'type': 'temp'},
                         '28EF9B560700007F': {'val': 20.0, 'name': "basement", 'type': 'temp'}
@@ -144,44 +144,51 @@ presence_is_enabled = False
 move_is_enabled = True
 
 
-runLoop = 0
-
-
-def printTemp(elts):
+def print_temp(elts):
+    """
+        Print all temperature values
+    """
     msg = ""
     for node, value in elts.items():
-        if type(value) is dict:
+        if isinstance(value, dict) is True:
             if 'val' in value:
                 if 'type'in value:
                     if value['type'] == "temp":
-                        nodeName = node
+                        node_name = node
                         if 'name' in value:
-                            nodeName = value['name']
-                        msg = msg + " " + nodeName + "=" + str(value['val'])
+                            node_name = value['name']
+                        msg = msg + " " + node_name + "=" + str(value['val'])
             else:
-                msg = msg + printTemp(value)
+                msg = msg + print_temp(value)
     return msg
 
 
+run_loop = 0
+log_msg = ""
+
 def run():
-    global runLoop
+    """
+        Cycle execution to update log file
+    """
+    global run_loop
+    global log_msg
     try:
-        f = open("/dev/shm/lbGate.settings", "w")
+        flog = open("/dev/shm/lbGate.settings", "w")
         msg = "###########################\n"
         msg = msg + "### " + time.strftime('%Y/%m/%d %H:%M:%S') + " ###\n"
         msg = msg + "# contact_status =\n"
         msg = msg + "    # node contact = current value | alarm value\n"
-        for nodeName, nodeValue in acq.items():
-            for sensorName, sensorValue in nodeValue.items():
-                if 'type' in sensorValue:
-                    if "alarm" in sensorValue['type']:
-                        msg = msg + "    " + nodeName.rjust(7) + " " + sensorName.rjust(22) + " = " + str(sensorValue['val']) + " | " + str(alarm_initial_status[nodeName][sensorName]['val']) + "\n"
+        for node_name, node_value in acq.items():
+            for sensor_name, sensor_value in node_value.items():
+                if 'type' in sensor_value:
+                    if "alarm" in sensor_value['type']:
+                        msg = msg + "    " + node_name.rjust(7) + " " + sensor_name.rjust(22) + " = " + str(sensor_value['val']) + " | " + str(alarm_initial_status[node_name][sensor_name]['val']) + "\n"
         msg = msg + "# move_status =\n"
-        for nodeName, nodeValue in acq.items():
-            for sensorName, sensorValue in nodeValue.items():
-                if 'type' in sensorValue:
-                    if "move" in sensorValue['type']:
-                        msg = msg + "    " + nodeName.rjust(7) + " " + sensorName.rjust(22) + " = " + str(sensorValue['val']) + "\n"
+        for node_name, node_value in acq.items():
+            for sensor_name, sensor_value in node_value.items():
+                if 'type' in sensor_value:
+                    if "move" in sensor_value['type']:
+                        msg = msg + "    " + node_name.rjust(7) + " " + sensor_name.rjust(22) + " = " + str(sensor_value['val']) + "\n"
         msg = msg + "# alarm_is_enabled = " + str(alarm_is_enabled) + "\n"
         msg = msg + "# alarm_triggered = " + str(alarm_triggered) + "\n"
         msg = msg + "# alarm_timeout = " + str(alarm_timeout) + "\n"
@@ -189,17 +196,18 @@ def run():
         msg = msg + "# presence_is_enabled = " + str(presence_is_enabled) + "\n"
         msg = msg + "# move_is_enabled = " + str(move_is_enabled) + "\n"
         msg = msg + "# node_list =\n"
-        msg = msg + "    #  node =    isOpen |   openCnt |     cmdRx |    pingTx |    pingRx |        wd | Max/" + str(MAX_NODE_ERRORS) + " |  readIter\n"
+        msg = msg + "    #  node =    is_open |   open_cnt |     cmd_rx |    ping_tx |    ping_rx |        wd | Max/" + str(MAX_NODE_ERRORS) + " |  read_iter\n"
         for key, value in node_list.items():
-            msg = msg + "    " + key.rjust(7) + " = " + str(value.isOpen()).rjust(9) + " | " + str(value.openCnt).rjust(9) + " | " + str(value.cmdRxCnt).rjust(9) + " | " + str(value.pingTxCnt).rjust(9) + " | " + str(value.pingRxCnt).rjust(9) + " | " + str(value.errorCnt).rjust(9) + " | " + str(value.errorCntMax).rjust(9) + " | " + str(value.readIter).rjust(9) + "\n"
+            msg = msg + "    " + key.rjust(7) + " = " + str(value.is_open()).rjust(9) + " | " + str(value.open_cnt).rjust(9) + " | " + str(value.cmd_rx_cnt).rjust(9) + " | " + str(value.ping_tx_cnt).rjust(9) + " | " + str(value.ping_rx_cnt).rjust(9) + " | " + str(value.error_cnt).rjust(9) + " | " + str(value.error_cnt_max).rjust(9) + " | " + str(value.read_iter).rjust(9) + "\n"
         for key, value in acq.items():
-            msgTemp = printTemp(value)
-            if "" != msgTemp:
-                msg = msg + key + " temp:" + msgTemp + "\n"
-        msg = msg + "- runLoop = " + str(runLoop) + "\n"
-        f.write(msg)
-        f.close()
+            msg_temp = print_temp(value)
+            if msg_temp != '':
+                msg = msg + key + " temp:" + msg_temp + "\n"
+        msg = msg + "- run_loop = " + str(run_loop) + "\n"
+        log_msg = msg
+        flog.write(msg)
+        flog.close()
     except Exception as ex:
-        fct.logException(ex)
-    runLoop = runLoop + 1
+        fct.log_exception(ex)
+    run_loop = run_loop + 1
 

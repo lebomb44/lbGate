@@ -17,11 +17,13 @@ import alarm
 import move
 
 class Monitoring(threading.Thread):
+    """ Monitoring class """
     def __init__(self, name):
         self.is_loop_enabled = True
         threading.Thread.__init__(self, name=name)
 
     def run(self):
+        """ Cyclic execution for polling on alarm, move and settings """
         loop_nb = 1
         while self.is_loop_enabled is True:
             #fct.log("DEBUG: Monitoring loop " + str(loop_nb))
@@ -35,24 +37,29 @@ class Monitoring(threading.Thread):
             time.sleep(0.1)
 
     def stop(self):
+        """ Stop monitoring thread """
         fct.log("Stopping Monitoring thread...")
         self.is_loop_enabled = False
         time.sleep(1.0)
 
 
 class CustomHandler(http.server.BaseHTTPRequestHandler):
-    def ok200(self, resp):
+    """ Custom HTTP handler """
+    def ok200(self, resp, content_type='text/plain'):
+        """ Return OK page """
         self.send_response(200)
-        self.send_header('Content-type', 'text/html')
+        self.send_header('Content-Type', content_type)
         self.end_headers()
         self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
 
     def error404(self, resp):
+        """ Return page not found """
         self.send_response(404)
         self.end_headers()
         self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
 
     def do_GET(self):
+        """ Callback on HTTP GET request """
         url_tokens = self.path.split('/')
         url_tokens_len = len(url_tokens)
         fct.log(str(url_tokens))
@@ -89,14 +96,14 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                         self.ok200("Alarm is disabled")
                                     else:
                                         self.ok200("Alarm is = " + str(settings.alarm_is_enabled) +
-                                                   "<br/>Trigger = " + str(settings.alarm_triggered) +
-                                                   "<br/>Timer = " + str(settings.alarm_timeout) +
-                                                   "<br/>Stop = " + str(settings.alarm_stopped))
+                                                   "\nTrigger = " + str(settings.alarm_triggered) +
+                                                   "\nTimer = " + str(settings.alarm_timeout) +
+                                                   "\nStop = " + str(settings.alarm_stopped))
                                 else:
                                     self.ok200("Alarm is = " + str(settings.alarm_is_enabled) +
-                                               "<br/>Trigger = " + str(settings.alarm_triggered) +
-                                               "<br/>Timer = " + str(settings.alarm_timeout) +
-                                               "<br/>Stop = " + str(settings.alarm_stopped))
+                                               "\nTrigger = " + str(settings.alarm_triggered) +
+                                               "\nTimer = " + str(settings.alarm_timeout) +
+                                               "\nStop = " + str(settings.alarm_stopped))
                             elif url_tokens[3] == "presence":
                                 if url_tokens_len > 4:
                                     if url_tokens[4] == "enable":
@@ -118,9 +125,9 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                         settings.move_is_enabled = False
                                         self.ok200("Move is disabled")
                                     else:
-                                        self.ok200("Move is enabled = " + str(settings.move_is_enabled) + "<br/>" + "Move = ")
+                                        self.ok200("Move is enabled = " + str(settings.move_is_enabled) + "\nMove = ")
                                 else:
-                                    self.ok200("Move is enabled = " + str(settings.move_is_enabled) + "<br/>" + "Move = ")
+                                    self.ok200("Move is enabled = " + str(settings.move_is_enabled) + "\nMove = ")
                             elif url_tokens[3] == "node":
                                 self.ok200(str(settings.node_list))
                             elif url_tokens[3] == "sendsms":
@@ -130,7 +137,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             else:
                                 self.error404("Bad command for node " + node + ": " + url_tokens[3])
                         else:
-                            self.error404("No command for node: " + node)
+                            self.ok200(settings.log_msg)
                     else:
                         self.error404("Bad node: " + node)
                 else:
@@ -146,17 +153,19 @@ http2serial = http.server.HTTPServer(("", settings.HTTPD_PORT), CustomHandler)
 
 
 def exit():
+    """ Stop HTTP server, stop serial threads and monitoring thread """
     global http2serial
     global monitoring
     fct.log("Stopping HTTP server")
     http2serial.server_close()
-    for key, value in settings.node_list.items():
-        value.stop()
+    for key_node, value_node in settings.node_list.items():
+        value_node.stop()
     monitoring.stop()
     time.sleep(2.0)
 
 
 def signal_term_handler(signal_, frame_):
+    """ Capture Ctrl+C signal and exit program """
     fct.log('Got SIGTERM, exiting...')
     exit()
     sys.exit(0)

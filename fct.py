@@ -7,9 +7,9 @@
 
 from __future__ import print_function
 import time
+import traceback
 from six.moves import urllib
 import requests
-import traceback
 
 import settings
 
@@ -19,7 +19,7 @@ def log(msg):
     print(time.strftime('%Y/%m/%d %H:%M:%S: ') + msg)
 
 
-def logException(ex, msg="ERROR Exception"):
+def log_exception(ex, msg="ERROR Exception"):
     """ Print exception with a time header """
     log(msg + ": " + str(ex))
     log(traceback.format_exc())
@@ -53,12 +53,13 @@ def send_alert(msg):
 
 
 def call_url_if_val_change(node_, cmd_, arg_array_):
+    """ Call URL only if value change from previous state """
     if node_ in settings.acq:
         if cmd_ in settings.acq[node_]:
             if 'val' in settings.acq[node_][cmd_]:
                 if 'url' in settings.acq[node_][cmd_]:
                     if len(arg_array_) == 2:
-                        if 'val' == arg_array_[0]:
+                        if arg_array_[0] == 'val':
                             arg_value = type(settings.acq[node_][cmd_]['val'])(arg_array_[1])
                             if settings.acq[node_][cmd_]['val'] != arg_value:
                                 http_request(settings.acq[node_][cmd_]['url'][arg_value])
@@ -85,7 +86,7 @@ def temp_set(node_, cmd_, arg_array_):
 def timeout_reset(node_, cmd_, arg_array_):
     """ Reset timeout to zero """
     #log("### Reset of " + node_ + " timeout")
-    if settings.node_list[node_].errorCnt > settings.node_list[node_].errorCntMax:
-        settings.node_list[node_].errorCntMax = settings.node_list[node_].errorCnt
-    settings.node_list[node_].errorCnt = 0
-    settings.node_list[node_].pingRxCnt += 1
+    if settings.node_list[node_].error_cnt > settings.node_list[node_].error_cnt_max:
+        settings.node_list[node_].error_cnt_max = settings.node_list[node_].error_cnt
+    settings.node_list[node_].error_cnt = 0
+    settings.node_list[node_].ping_rx_cnt += 1

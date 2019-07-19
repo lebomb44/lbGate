@@ -12,6 +12,9 @@ import fct
 
 
 def run():
+    """
+        Cycle execution to poll on sensors
+    """
     try:
         if settings.alarm_is_enabled is True:
             if settings.alarm_triggered is True:
@@ -25,17 +28,17 @@ def run():
                     settings.node_list["safety"].write("buzzerRelay set 1")
             else:
                 msg = ""
-                for nodeName, nodeValue in settings.acq.items():
-                    for sensorName, sensorValue in nodeValue.items():
-                        if 'type' in sensorValue:
-                            if "alarm" in sensorValue['type']:
-                                #fct.log("DEBUG: checking alarm: " + nodeName + "." + sensorName + ": " + str(sensorValue['val']) + " / " + str(settings.alarm_initial_status[nodeName][sensorName]['val']))
-                                if sensorValue['val'] != settings.alarm_initial_status[nodeName][sensorName]['val']:
-                                    msg = msg + " " + nodeName + "." + sensorName
+                for node_name, node_value in settings.acq.items():
+                    for sensor_name, sensor_value in node_value.items():
+                        if 'type' in sensor_value:
+                            if "alarm" in sensor_value['type']:
+                                #fct.log("DEBUG: checking alarm: " + node_name + "." + sensor_name + ": " + str(sensor_value['val']) + " / " + str(settings.alarm_initial_status[node_name][sensor_name]['val']))
+                                if sensor_value['val'] != settings.alarm_initial_status[node_name][sensor_name]['val']:
+                                    msg = msg + " " + node_name + "." + sensor_name
                                     settings.alarm_triggered = True
-                            if "move" in sensorValue['type']:
-                                if sensorValue['val'] == 0:
-                                    msg = msg + " " + nodeName + "." + sensorName
+                            if "move" in sensor_value['type']:
+                                if sensor_value['val'] == 0:
+                                    msg = msg + " " + node_name + "." + sensor_name
                                     settings.alarm_triggered = True
                 if settings.alarm_triggered is True:
                     settings.alarm_timeout = 0
@@ -49,4 +52,4 @@ def run():
             settings.alarm_initial_status = copy.deepcopy(settings.acq)
             settings.node_list["safety"].write("buzzerRelay set 0")
     except Exception as ex:
-        fct.logException(ex)
+        fct.log_exception(ex)
