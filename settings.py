@@ -196,7 +196,7 @@ def run():
         msg = msg + "# presence_is_enabled = " + str(presence_is_enabled) + "\n"
         msg = msg + "# move_is_enabled = " + str(move_is_enabled) + "\n"
         msg = msg + "# node_list =\n"
-        msg = msg + "    #  node =    is_open |   open_cnt |     cmd_rx |    ping_tx |    ping_rx |        wd | Max/" + str(MAX_NODE_ERRORS) + " |  read_iter\n"
+        msg = msg + "    #  node =   is_open |  open_cnt |    cmd_rx |   ping_tx |   ping_rx |        wd | Max/" + str(MAX_NODE_ERRORS) + " | read_iter\n"
         for key, value in node_list.items():
             msg = msg + "    " + key.rjust(7) + " = " + str(value.is_open()).rjust(9) + " | " + str(value.open_cnt).rjust(9) + " | " + str(value.cmd_rx_cnt).rjust(9) + " | " + str(value.ping_tx_cnt).rjust(9) + " | " + str(value.ping_rx_cnt).rjust(9) + " | " + str(value.error_cnt).rjust(9) + " | " + str(value.error_cnt_max).rjust(9) + " | " + str(value.read_iter).rjust(9) + "\n"
         for key, value in acq.items():
