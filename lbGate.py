@@ -15,6 +15,7 @@ import settings
 import fct
 import alarm
 import move
+import presence
 
 class Monitoring(threading.Thread):
     """ Monitoring class """
@@ -148,6 +149,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
             self.error404("Url too short")
 
 
+presence = presence.Presence("Presence")
 monitoring = Monitoring("Monitoring")
 http2serial = http.server.HTTPServer(("", settings.HTTPD_PORT), CustomHandler)
 
@@ -156,11 +158,13 @@ def exit():
     """ Stop HTTP server, stop serial threads and monitoring thread """
     global http2serial
     global monitoring
+    global presence
     fct.log("Stopping HTTP server")
     http2serial.server_close()
     for key_node, value_node in settings.node_list.items():
         value_node.stop()
     monitoring.stop()
+    presence.stop()
     time.sleep(2.0)
 
 
@@ -173,6 +177,7 @@ def signal_term_handler(signal_, frame_):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_term_handler)
+    presence.start()
     monitoring.start()
     for key, value in settings.node_list.items():
         value.start()
