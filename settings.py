@@ -39,7 +39,8 @@ acq = dict({
         'waterWestRelay': {'val': 0},
         'waterSouthRelay': {'val': 0},
         'windSpeed': {'val': 0},
-        'rainFlow': {'val': 0}
+        'rainFlow': {'val': 0},
+        'tempSensors': {'287979C8070000D1': {'val': 20.0, 'name': "antenna", 'type': ["temp"]}}
     },
     'safety': {
         'ping': {'val': 0, 'fct': fct.timeout_reset},
@@ -69,10 +70,10 @@ acq = dict({
         'doorShutterContact': {'val': 0, 'type': ["alarm"]},
         'tvShutterContact': {'val': 0, 'type': ["alarm"]},
         'lightRelay': {'val': 0},
-        'tempSensors': {'2892A7FB05000073': {'val': 20.0, 'name': "c0", 'type': 'temp'},
-                        '28D2AFFB05000038': {'val': 20.0, 'name': "c1", 'type': 'temp'},
-                        '2813CEFB0500004C': {'val': 20.0, 'name': "c2", 'type': 'temp'},
-                        '28FF6CC7070000BD': {'val': 20.0, 'name': "c3", 'type': 'temp'}
+        'tempSensors': {'2892A7FB05000073': {'val': 20.0, 'name': "c0", 'type': ["temp"]},
+                        '28D2AFFB05000038': {'val': 20.0, 'name': "c1", 'type': ["temp"]},
+                        '2813CEFB0500004C': {'val': 20.0, 'name': "c2", 'type': ["temp"]},
+                        '28FF6CC7070000BD': {'val': 20.0, 'name': "c3", 'type': ["temp"]}
                        }
     },
     'kitchen': {
@@ -89,10 +90,10 @@ acq = dict({
                               ]},
         'lightRelay': {'val': 0},
         'entryRelay': {'val': 0},
-        'tempSensors': {'28F4A156070000E5': {'val': 20.0, 'name': "c0", 'type': 'temp'},
-                        '28121AAF070000A3': {'val': 20.0, 'name': "c1", 'type': 'temp'},
-                        '28BAACFB05000014': {'val': 20.0, 'name': "c2", 'type': 'temp'},
-                        '285FA8FB050000C9': {'val': 20.0, 'name': "c3", 'type': 'temp'}
+        'tempSensors': {'28F4A156070000E5': {'val': 20.0, 'name': "c0", 'type': ["temp"]},
+                        '28121AAF070000A3': {'val': 20.0, 'name': "c1", 'type': ["temp"]},
+                        '28BAACFB05000014': {'val': 20.0, 'name': "c2", 'type': ["temp"]},
+                        '285FA8FB050000C9': {'val': 20.0, 'name': "c3", 'type': ["temp"]}
                        }
     },
     'bedroom': {
@@ -124,12 +125,12 @@ acq = dict({
         'basementWindowContact': {'val': 0, 'type': ["alarm"]},
         'basementShutterContact': {'val': 0, 'type': ["alarm"]},
         'lightRelay': {'val': 0},
-        'tempSensors': {'287CB2FB050000E7': {'val': 20.0, 'name': "parents", 'type': 'temp'},
-                        '2861CCFB05000039': {'val': 20.0, 'name': "desktop", 'type': 'temp'},
-                        '2841825707000030': {'val': 20.0, 'name': "ellis", 'type': 'temp'},
-                        '287288AE070000DB': {'val': 20.0, 'name': "bathroom", 'type': 'temp'},
-                        '28C6A9FB05000023': {'val': 20.0, 'name': "corridor", 'type': 'temp'},
-                        '28EF9B560700007F': {'val': 20.0, 'name': "basement", 'type': 'temp'}
+        'tempSensors': {'287CB2FB050000E7': {'val': 20.0, 'name': "parents", 'type': ["temp"]},
+                        '2861CCFB05000039': {'val': 20.0, 'name': "desktop", 'type': ["temp"]},
+                        '2841825707000030': {'val': 20.0, 'name': "ellis", 'type': ["temp"]},
+                        '287288AE070000DB': {'val': 20.0, 'name': "bathroom", 'type': ["temp"]},
+                        '28C6A9FB05000023': {'val': 20.0, 'name': "corridor", 'type': ["temp"]},
+                        '28EF9B560700007F': {'val': 20.0, 'name': "basement", 'type': ["temp"]}
                        }
     }
 })
@@ -153,7 +154,7 @@ def print_temp(elts):
         if isinstance(value, dict) is True:
             if 'val' in value:
                 if 'type'in value:
-                    if value['type'] == "temp":
+                    if "temp" in value['type']:
                         node_name = node
                         if 'name' in value:
                             node_name = value['name']
@@ -203,6 +204,7 @@ def run():
             msg_temp = print_temp(value)
             if msg_temp != '':
                 msg = msg + key + " temp:" + msg_temp + "\n"
+        msg = msg + "# weather = " + "rain=" + str(acq['ext']['rainFlow']['val']) + " wind=" + str(acq['ext']['windSpeed']['val']) + "\n"
         msg = msg + "- run_loop = " + str(run_loop) + "\n"
         log_msg = msg
         flog.write(msg)
