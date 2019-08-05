@@ -10,6 +10,7 @@ import threading
 import signal
 import sys
 import time
+import json
 
 import settings
 import fct
@@ -131,6 +132,8 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                     self.ok200("Move is enabled = " + str(settings.move_is_enabled) + "\nMove = ")
                             elif url_tokens[3] == "node":
                                 self.ok200(str(settings.node_list))
+                            elif url_tokens[3] == "json":
+                                self.ok200(json.dumps(settings.acq), content_type="application/json")
                             elif url_tokens[3] == "sendsms":
                                 if url_tokens_len > 4:
                                     self.ok200("Sending SMS: " + url_tokens[4])
