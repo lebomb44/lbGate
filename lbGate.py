@@ -52,7 +52,10 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', content_type)
         self.end_headers()
-        self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
+        if content_type == 'text/plain':
+            self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
+        else:
+            self.wfile.write((resp).encode())
 
     def error404(self, resp):
         """ Return page not found """
@@ -133,7 +136,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             elif url_tokens[3] == "node":
                                 self.ok200(str(settings.node_list))
                             elif url_tokens[3] == "json":
-                                self.ok200(json.dumps(list(settings.acq)), content_type="application/json")
+                                self.ok200(str(settings.acq), content_type="application/json")
                             elif url_tokens[3] == "sendsms":
                                 if url_tokens_len > 4:
                                     self.ok200("Sending SMS: " + url_tokens[4])
