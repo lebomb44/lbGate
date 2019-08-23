@@ -31,7 +31,7 @@ node_list = dict(
 
 acq = dict({
     'ext': {
-        'ping': {'val': 0, 'fct': fct.timeout_reset},
+        'ping': {'val': 0, 'fct': "timeout_reset"},
         'waterMainRelay': {'val': 0},
         'waterGardenRelay': {'val': 0},
         'waterSideRelay': {'val': 0},
@@ -43,7 +43,7 @@ acq = dict({
         'tempSensors': {'287979C8070000D1': {'val': 20.0, 'name': "antenna", 'type': ["temp"]}}
     },
     'safety': {
-        'ping': {'val': 0, 'fct': fct.timeout_reset},
+        'ping': {'val': 0, 'fct': "timeout_reset"},
         'moveCoridorContact': {'val': 0, 'type': ["move"]},
         'moveDiningContact': {'val': 0, 'type': ["move"]},
         'moveEntryContact': {'val': 0, 'type': ["move"]},
@@ -57,8 +57,8 @@ acq = dict({
         'out4Relay': {'val': 0}
     },
     'dining': {
-        'ping': {'val': 0, 'fct': fct.timeout_reset},
-        'windowShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
+        'ping': {'val': 0, 'fct': "timeout_reset"},
+        'windowShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                                 'url': [
                                     'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=192',
                                     'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=190',
@@ -77,12 +77,12 @@ acq = dict({
                        }
     },
     'kitchen': {
-        'ping': {'val': 0, 'fct': fct.timeout_reset},
+        'ping': {'val': 0, 'fct': "timeout_reset"},
         'windowWindowContact': {'val': 0, 'type': ["alarm"]},
         'windowShutterContact': {'val': 0, 'type': ["alarm"]},
         'doorWindowContact': {'val': 0, 'type': ["alarm"]},
         'doorShutterContact': {'val': 0, 'type': ["alarm"]},
-        'doorShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
+        'doorShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                               'url': [
                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=202',
                                   'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=200',
@@ -97,8 +97,8 @@ acq = dict({
                        }
     },
     'bedroom': {
-        'ping': {'val': 0, 'fct': fct.timeout_reset},
-        'parentsShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
+        'ping': {'val': 0, 'fct': "timeout_reset"},
+        'parentsShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                                  'url': [
                                      'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=167',
                                      'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=165',
@@ -106,7 +106,7 @@ acq = dict({
                                  ]},
         'parentsWindowContact': {'val': 0, 'type': ["alarm"]},
         'parentsShutterContact': {'val': 0, 'type': ["alarm"]},
-        'ellisShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
+        'ellisShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                                'url': [
                                    'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=162',
                                    'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=160',
@@ -114,7 +114,7 @@ acq = dict({
                                ]},
         'ellisWindowContact': {'val': 0, 'type': ["alarm"]},
         'ellisShutterContact': {'val': 0, 'type': ["alarm"]},
-        'desktopShutterButton': {'val': 1, 'fct': fct.call_url_if_val_change,
+        'desktopShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                                  'url': [
                                      'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=172',
                                      'http://localhost/core/api/jeeApi.php?apikey=nAx7bK300sR01CCq20mXJbsYaYcWc84hfPEY3W1Rnh27BTDb&type=cmd&id=170',

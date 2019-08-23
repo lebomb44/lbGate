@@ -136,7 +136,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             elif url_tokens[3] == "node":
                                 self.ok200(str(settings.node_list))
                             elif url_tokens[3] == "json":
-                                self.ok200(str(settings.acq), content_type="application/json")
+                                self.ok200(json.dumps(settings.acq), content_type="application/json")
                             elif url_tokens[3] == "sendsms":
                                 if url_tokens_len > 4:
                                     self.ok200("Sending SMS: " + url_tokens[4])

@@ -84,7 +84,8 @@ class Serial(threading.Thread):
                                     arg_map = line_array[2:]
                                     if 'fct' in settings.acq[node][cmd]:
                                         try:
-                                            settings.acq[node][cmd]['fct'](node, cmd, arg_map)
+                                            fct_to_run = getattr(fct, settings.acq[node][cmd]['fct'])
+                                            fct_to_run(node, cmd, arg_map)
                                         except Exception as ex:
                                             fct.log_exception(ex)
                                     else:
