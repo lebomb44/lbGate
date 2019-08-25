@@ -135,12 +135,19 @@ acq = dict({
     }
 })
 
+alarm = dict({
+    'initial_status': copy.deepcopy(acq),
+    'is_enabled': False,
+    'triggered': False,
+    'timeout': 0,
+    'stopped': False
+})
 
-alarm_initial_status = copy.deepcopy(acq)
-alarm_is_enabled = False
-alarm_triggered = False
-alarm_timeout = 0
-alarm_stopped = False
+#alarm_initial_status = copy.deepcopy(acq)
+#alarm_is_enabled = False
+#alarm_triggered = False
+#alarm_timeout = 0
+#alarm_stopped = False
 presence_is_enabled = False
 move_is_enabled = True
 
@@ -183,17 +190,17 @@ def run():
             for sensor_name, sensor_value in node_value.items():
                 if 'type' in sensor_value:
                     if "alarm" in sensor_value['type']:
-                        msg = msg + "    " + node_name.rjust(7) + " " + sensor_name.rjust(22) + " = " + str(sensor_value['val']) + " | " + str(alarm_initial_status[node_name][sensor_name]['val']) + "\n"
+                        msg = msg + "    " + node_name.rjust(7) + " " + sensor_name.rjust(22) + " = " + str(sensor_value['val']) + " | " + str(alarm['initial_status'][node_name][sensor_name]['val']) + "\n"
         msg = msg + "# move_status =\n"
         for node_name, node_value in acq.items():
             for sensor_name, sensor_value in node_value.items():
                 if 'type' in sensor_value:
                     if "move" in sensor_value['type']:
                         msg = msg + "    " + node_name.rjust(7) + " " + sensor_name.rjust(22) + " = " + str(sensor_value['val']) + "\n"
-        msg = msg + "# alarm_is_enabled = " + str(alarm_is_enabled) + "\n"
-        msg = msg + "# alarm_triggered = " + str(alarm_triggered) + "\n"
-        msg = msg + "# alarm_timeout = " + str(alarm_timeout) + "\n"
-        msg = msg + "# alarm_stopped = " + str(alarm_stopped) + "\n"
+        msg = msg + "# alarm_is_enabled = " + str(alarm['is_enabled']) + "\n"
+        msg = msg + "# alarm_triggered = " + str(alarm['triggered']) + "\n"
+        msg = msg + "# alarm_timeout = " + str(alarm['timeout']) + "\n"
+        msg = msg + "# alarm_stopped = " + str(alarm['stopped']) + "\n"
         msg = msg + "# presence_is_enabled = " + str(presence_is_enabled) + "\n"
         msg = msg + "# move_is_enabled = " + str(move_is_enabled) + "\n"
         msg = msg + "# node_list =\n"

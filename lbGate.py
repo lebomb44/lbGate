@@ -88,27 +88,31 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             if url_tokens[3] == "alarm":
                                 if url_tokens_len > 4:
                                     if url_tokens[4] == "enable":
-                                        settings.alarm_is_enabled = True
-                                        settings.alarm_triggered = False
-                                        settings.alarm_timeout = 0
-                                        settings.alarm_stopped = False
+                                        settings.alarm['is_enabled'] = True
+                                        settings.alarm['triggered'] = False
+                                        settings.alarm['timeout'] = 0
+                                        settings.alarm['stopped'] = False
                                         self.ok200("Alarm is enabled: ")
                                     elif url_tokens[4] == "disable":
-                                        settings.alarm_is_enabled = False
-                                        settings.alarm_triggered = False
-                                        settings.alarm_timeout = 0
-                                        settings.alarm_stopped = False
+                                        settings.alarm['is_enabled'] = False
+                                        settings.alarm['triggered'] = False
+                                        settings.alarm['timeout'] = 0
+                                        settings.alarm['stopped'] = False
                                         self.ok200("Alarm is disabled")
                                     else:
-                                        self.ok200("Alarm is = " + str(settings.alarm_is_enabled) +
-                                                   "\nTrigger = " + str(settings.alarm_triggered) +
-                                                   "\nTimer = " + str(settings.alarm_timeout) +
-                                                   "\nStop = " + str(settings.alarm_stopped))
+                                        try:
+                                            token_nbs = range(5, url_tokens_len)
+                                            node_point = settings.alarm
+                                            for token_index in token_nbs:
+                                                node_point = node_point[url_tokens[token_index]]
+                                            self.ok200(json.dumps(node_point, sort_keys=True, indent=4), content_type="application/json")
+                                        except:
+                                            self.error404("Bad path in 'alarm'")
                                 else:
-                                    self.ok200("Alarm is = " + str(settings.alarm_is_enabled) +
-                                               "\nTrigger = " + str(settings.alarm_triggered) +
-                                               "\nTimer = " + str(settings.alarm_timeout) +
-                                               "\nStop = " + str(settings.alarm_stopped))
+                                    self.ok200("Alarm is = " + str(settings.alarm['is_enabled']) +
+                                               "\nTrigger = " + str(settings.alarm['triggered']) +
+                                               "\nTimer = " + str(settings.alarm['timeout']) +
+                                               "\nStop = " + str(settings.alarm['stopped']))
                             elif url_tokens[3] == "presence":
                                 if url_tokens_len > 4:
                                     if url_tokens[4] == "enable":
@@ -136,7 +140,14 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             elif url_tokens[3] == "node":
                                 self.ok200(str(settings.node_list))
                             elif url_tokens[3] == "json":
-                                self.ok200(json.dumps(settings.acq), content_type="application/json")
+                                try:
+                                    token_nbs = range(4, url_tokens_len)
+                                    node_point = settings.acq
+                                    for token_index in token_nbs:
+                                        node_point = node_point[url_tokens[token_index]]
+                                    self.ok200(json.dumps(node_point, sort_keys=True, indent=4), content_type="application/json")
+                                except:
+                                    self.error404("Bad path in 'acq'")
                             elif url_tokens[3] == "sendsms":
                                 if url_tokens_len > 4:
                                     self.ok200("Sending SMS: " + url_tokens[4])

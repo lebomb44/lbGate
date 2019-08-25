@@ -24,19 +24,19 @@ class Presence(threading.Thread):
         """ Cyclic execution of light ON/OFF simulating presence """
         while self.is_loop_enabled is True:
             if datetime.datetime.now().hour >= 22 or datetime.datetime.now().hour <= 6:
-                if settings.presence_is_enabled is True or settings.alarm_is_enabled is True:
+                if settings.presence_is_enabled is True or settings.alarm['is_enabled'] is True:
                     settings.node_list['kitchen'].write('entryRelay set 1')
                 n_sec = random.randint(10, 15)*60
                 for n_loop in range(0, n_sec):
-                    if settings.presence_is_enabled is True or settings.alarm_is_enabled is True:
+                    if settings.presence_is_enabled is True or settings.alarm['is_enabled'] is True:
                         time.sleep(1.0)
-                if settings.presence_is_enabled is True or settings.alarm_is_enabled is True:
+                if settings.presence_is_enabled is True or settings.alarm['is_enabled'] is True:
                     settings.node_list['kitchen'].write('entryRelay set 0')
                 n_sec = random.randint(15, 30)*60
                 for n_loop in range(0, n_sec):
-                    if settings.presence_is_enabled is True or settings.alarm_is_enabled is True:
+                    if settings.presence_is_enabled is True or settings.alarm['is_enabled'] is True:
                         time.sleep(1.0)
-            if settings.presence_is_enabled is False and settings.alarm_is_enabled is False:
+            if settings.presence_is_enabled is False and settings.alarm['is_enabled'] is False:
                 settings.node_list['kitchen'].write('entryRelay set 0')
             time.sleep(10.0)
 
