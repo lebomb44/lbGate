@@ -70,10 +70,10 @@ acq = dict({
         'doorShutterContact': {'val': 0, 'type': ["alarm"]},
         'tvShutterContact': {'val': 0, 'type': ["alarm"]},
         'lightRelay': {'val': 0},
-        'tempSensors': {'2892A7FB05000073': {'val': 20.0, 'name': "c0", 'type': ["temp"]},
-                        '28D2AFFB05000038': {'val': 20.0, 'name': "c1", 'type': ["temp"]},
-                        '2813CEFB0500004C': {'val': 20.0, 'name': "c2", 'type': ["temp"]},
-                        '28FF6CC7070000BD': {'val': 20.0, 'name': "c3", 'type': ["temp"]}
+        'tempSensors': {'2892A7FB05000073': {'val': 20.0, 'name': "tv", 'type': ["temp"]},
+                        '28D2AFFB05000038': {'val': 20.0, 'name': "veranda", 'type': ["temp"]},
+                        '2813CEFB0500004C': {'val': 20.0, 'name': "telephone", 'type': ["temp"]},
+                        '28FF6CC7070000BD': {'val': 20.0, 'name': "fenetre", 'type': ["temp"]}
                        }
     },
     'kitchen': {
@@ -90,10 +90,10 @@ acq = dict({
                               ]},
         'lightRelay': {'val': 0},
         'entryRelay': {'val': 0},
-        'tempSensors': {'28F4A156070000E5': {'val': 20.0, 'name': "c0", 'type': ["temp"]},
-                        '28121AAF070000A3': {'val': 20.0, 'name': "c1", 'type': ["temp"]},
-                        '28BAACFB05000014': {'val': 20.0, 'name': "c2", 'type': ["temp"]},
-                        '285FA8FB050000C9': {'val': 20.0, 'name': "c3", 'type': ["temp"]}
+        'tempSensors': {'28F4A156070000E5': {'val': 20.0, 'name': "four", 'type': ["temp"]},
+                        '28121AAF070000A3': {'val': 20.0, 'name': "fenetre", 'type': ["temp"]},
+                        '28BAACFB05000014': {'val': 20.0, 'name': "porte", 'type': ["temp"]},
+                        '285FA8FB050000C9': {'val': 20.0, 'name': "entree", 'type': ["temp"]}
                        }
     },
     'bedroom': {
@@ -140,14 +140,10 @@ alarm = dict({
     'is_enabled': False,
     'triggered': False,
     'timeout': 0,
-    'stopped': False
+    'stopped': False,
+    'contacts': 0
 })
 
-#alarm_initial_status = copy.deepcopy(acq)
-#alarm_is_enabled = False
-#alarm_triggered = False
-#alarm_timeout = 0
-#alarm_stopped = False
 presence_is_enabled = False
 move_is_enabled = True
 

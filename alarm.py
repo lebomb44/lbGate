@@ -16,6 +16,14 @@ def run():
         Cycle execution to poll on sensors
     """
     try:
+        alarm_sum = 1
+        for node_name, node_value in settings.acq.items():
+            for sensor_name, sensor_value in node_value.items():
+                if 'type' in sensor_value:
+                    if "alarm" in sensor_value['type']:
+                        if sensor_value['val'] == 0:
+                            alarm_sum = 0
+        settings.alarm['contacts'] = alarm_sum
         if settings.alarm['is_enabled'] is True:
             if settings.alarm['triggered'] is True:
                 if 10*60 < settings.alarm['timeout']:

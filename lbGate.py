@@ -63,6 +63,10 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
 
+    def log_message(self, format, *args):
+        """ Overwrite default log function """
+        return
+
     def do_GET(self):
         """ Callback on HTTP GET request """
         url_tokens = self.path.split('/')
