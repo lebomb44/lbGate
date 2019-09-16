@@ -84,9 +84,9 @@ acq = dict({
         'doorShutterContact': {'val': 0, 'type': ["alarm"]},
         'doorShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                               'url': [
-                                  'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=122',
-                                  'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=120',
-                                  'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=121'
+                                  'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=126',
+                                  'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=124',
+                                  'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=125'
                               ]},
         'lightRelay': {'val': 0},
         'entryRelay': {'val': 0},
