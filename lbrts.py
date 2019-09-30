@@ -57,7 +57,8 @@ class Rts():
         """ Write the serial port if already open """
         try:
             if self.is_open() is True:
-                self.fd_port.write(("ZIA++" + msg + "\r").encode('utf-8'))
+                self.fd_port.write(("ZIA++" + msg + "\r\r").encode('utf-8'))
+                self.fd_port.write(("ZIA++" + msg + "\r\r").encode('utf-8'))
                 fct.log("Write serial to node " + self.node_name + ": " + msg)
                 self.fd_port.flush()
         except Exception as ex:

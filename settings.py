@@ -60,9 +60,9 @@ acq = dict({
         'ping': {'val': 0, 'fct': "timeout_reset"},
         'windowShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                                 'url': [
-                                    'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=118',
-                                    'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=116',
-                                    'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=117'
+                                    'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/4/RTS',
+                                    'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/4/RTS',
+                                    'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/4/RTS'
                                 ]},
         'windowWindowContact': {'val': 0, 'type': ["alarm"]},
         'windowShutterContact': {'val': 0, 'type': ["alarm"]},
@@ -84,9 +84,9 @@ acq = dict({
         'doorShutterContact': {'val': 0, 'type': ["alarm"]},
         'doorShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                               'url': [
-                                  'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=126',
-                                  'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=124',
-                                  'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=125'
+                                  'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/8/RTS',
+                                  'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/8/RTS',
+                                  'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/8/RTS'
                               ]},
         'lightRelay': {'val': 0},
         'entryRelay': {'val': 0},
@@ -100,25 +100,25 @@ acq = dict({
         'ping': {'val': 0, 'fct': "timeout_reset"},
         'parentsShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                                  'url': [
-                                     'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=142',
-                                     'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=140',
-                                     'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=141'
+                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/16/RTS',
+                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/16/RTS',
+                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/16/RTS'
                                  ]},
         'parentsWindowContact': {'val': 0, 'type': ["alarm"]},
         'parentsShutterContact': {'val': 0, 'type': ["alarm"]},
         'ellisShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                                'url': [
-                                   'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=138',
-                                   'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=136',
-                                   'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=137'
+                                   'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/14/RTS',
+                                   'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/14/RTS',
+                                   'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/14/RTS'
                                ]},
         'ellisWindowContact': {'val': 0, 'type': ["alarm"]},
         'ellisShutterContact': {'val': 0, 'type': ["alarm"]},
         'desktopShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
                                  'url': [
-                                     'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=146',
-                                     'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=144',
-                                     'http://localhost/core/api/jeeApi.php?apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&type=cmd&id=145'
+                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/18/RTS',
+                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/18/RTS',
+                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/18/RTS'
                                  ]},
         'desktopWindowContact': {'val': 0, 'type': ["alarm"]},
         'desktopShutterContact': {'val': 0, 'type': ["alarm"]},
