@@ -17,6 +17,8 @@ import fct
 import alarm
 import move
 import presence
+import lbrts
+import lbsms
 
 class Monitoring(threading.Thread):
     """ Monitoring class """
@@ -160,6 +162,26 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                 self.error404("Bad command for node " + node + ": " + url_tokens[3])
                         else:
                             self.ok200(settings.log_msg)
+                    elif node == "rts":
+                        if url_tokens_len > 3:
+                            cmd = url_tokens[3]
+                            if url_tokens_len > 4:
+                                for token in url_tokens[4:]:
+                                    cmd = cmd + " " + token
+                            rts.write(cmd)
+                            self.ok200(node + " " + cmd)
+                        else:
+                            self.error404("No command for node: " + node)
+                    elif node == "sms":
+                        if url_tokens_len > 3:
+                            cmd = url_tokens[3]
+                            if url_tokens_len > 4:
+                                for token in url_tokens[4:]:
+                                    cmd = cmd + " " + token
+                            sms.write(cmd)
+                            self.ok200(node + " " + cmd)
+                        else:
+                            self.error404("No command for node: " + node)
                     else:
                         self.error404("Bad node: " + node)
                 else:
@@ -173,6 +195,8 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
 presence = presence.Presence("Presence")
 monitoring = Monitoring("Monitoring")
 http2serial = http.server.HTTPServer(("", settings.HTTPD_PORT), CustomHandler)
+rts=lbrts.Rts("rfplayer")
+sms=lbsms.Sms("ttyUSB7")
 
 
 def exit():
@@ -200,6 +224,24 @@ if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_term_handler)
     presence.start()
     monitoring.start()
+    rts.open()
+    rts.write("HELLO")
+    rts.write("FORMAT OFF")
+    rts.write("STATUS JSON")
+    rts.write("FORMAT JSON")
+    time.sleep(10.0)
+    #sms.open()
+    sms.write("ATZ")
+    time.sleep(1.0)
+    sms.write("ATE0")
+    time.sleep(1.0)
+    sms.write("AT+CFUN=1")
+    time.sleep(1.0)
+    sms.write("AT+CMGF=1")
+    time.sleep(1.0)
+    sms.write('AT+CMGS="+33689350159"')
+    time.sleep(1.0)
+    sms.write("Starting lbGate\x1A")
     for key, value in settings.node_list.items():
         value.start()
     fct.log("Serving at port " + str(settings.HTTPD_PORT))
