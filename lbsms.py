@@ -110,16 +110,12 @@ class Sms():
             flag = fcntl.fcntl(fd_port, fcntl.F_GETFL)
             fcntl.fcntl(fd_port, fcntl.F_SETFL, flag | os.O_NONBLOCK)
             self.write("ATZ")
-            time.sleep(1.0)
+            time.sleep(0.1)
             self.write("ATE0")
-            time.sleep(1.0)
+            time.sleep(0.1)
             self.write("AT+CFUN=1")
-            time.sleep(1.0)
+            time.sleep(0.1)
             self.write("AT+CMGF=1")
-            time.sleep(1.0)
-            self.write('AT+CMGS="+33689350159"')
-            time.sleep(1.0)
-            self.write("Starting lbGate\x1A")
         except Exception as ex:
             fct.log_exception(ex)
 
@@ -143,4 +139,13 @@ class Sms():
                 self.fd_port.flush()
         except Exception as ex:
             fct.log("ERROR write_serial Exception: " + str(ex))
+
+
+    def send(self, phone, msg):
+        """ Send SMS message to phone number """
+        try:
+            self.write('AT+CMGS="' + str(phone) + '"')
+            self.write(str(msg) + "\x1A")
+        except Exception as ex:
+            fct.log("ERROR send Exception: " + str(ex))
 
