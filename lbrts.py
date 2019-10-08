@@ -109,6 +109,10 @@ class Rts():
             fd_port = self.fd_port.fileno()
             flag = fcntl.fcntl(fd_port, fcntl.F_GETFL)
             fcntl.fcntl(fd_port, fcntl.F_SETFL, flag | os.O_NONBLOCK)
+            self.write("HELLO")
+            self.write("FORMAT OFF")
+            self.write("STATUS JSON")
+            self.write("FORMAT JSON")
         except Exception as ex:
             fct.log_exception(ex)
 
