@@ -109,6 +109,17 @@ class Sms():
             fd_port = self.fd_port.fileno()
             flag = fcntl.fcntl(fd_port, fcntl.F_GETFL)
             fcntl.fcntl(fd_port, fcntl.F_SETFL, flag | os.O_NONBLOCK)
+            self.write("ATZ")
+            time.sleep(1.0)
+            self.write("ATE0")
+            time.sleep(1.0)
+            self.write("AT+CFUN=1")
+            time.sleep(1.0)
+            self.write("AT+CMGF=1")
+            time.sleep(1.0)
+            self.write('AT+CMGS="+33689350159"')
+            time.sleep(1.0)
+            self.write("Starting lbGate\x1A")
         except Exception as ex:
             fct.log_exception(ex)
 
