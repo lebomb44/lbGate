@@ -94,7 +94,7 @@ class Rts(threading.Thread):
                             except Exception as ex:
                                 fct.log_exception(ex)
                         else:
-                            fct.log("WARNING: RfPlayer line does not start with 'ZIA33'")
+                            fct.log("WARNING: RfPlayer line does not start with 'ZIA33': " + str(line))
             except Exception as ex:
                 fct.log_exception(ex)
                 self.close()
