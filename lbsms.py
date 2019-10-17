@@ -15,7 +15,7 @@ import fct
 import settings
 
 
-class Sms():
+class Sms(threading.Thread):
     """ Class for a serial port """
     def __init__(self, name):
         self.port = "/dev/" + name
@@ -71,14 +71,11 @@ class Sms():
                         self.read_iter = read_iter_
                     if line != "":
                         line_array = line.split(" ")
-                        fct.log("DEBUG: line_array=" + str(line_array)
+                        fct.log("DEBUG: line_array=" + str(line_array))
             except Exception as ex:
                 fct.log_exception(ex)
                 self.close()
-            self.timeout_check()
             loop_nb += 1
-            if loop_nb >= 1000000:
-                loop_nb = 0
             time.sleep(0.001)
 
 

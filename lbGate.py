@@ -224,7 +224,7 @@ def signal_term_handler(signal_, frame_):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_term_handler)
-    sms.start()
+    #sms.start()
     rts.start()
     presence.start()
     monitoring.start()

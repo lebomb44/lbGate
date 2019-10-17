@@ -10,12 +10,13 @@ import threading
 import time
 import fcntl
 import os
+import json
 
 import fct
 import settings
 
 
-class Rts():
+class Rts(threading.Thread):
     """ Class for a serial port """
     def __init__(self, name):
         self.port = "/dev/" + name
@@ -70,15 +71,34 @@ class Rts():
                     if read_iter_ > self.read_iter:
                         self.read_iter = read_iter_
                     if line != "":
-                        line_array = line.split(" ")
-                        fct.log("DEBUG: line_array=" + str(line_array)
+                        if line.startswith("ZIA33"):
+                            try:
+                                resp = json.loads(line[5:])
+                                #fct.log("DEBUG: line_array=" + str(json.dumps(resp)))
+                                if resp["frame"]["header"]["protocolMeaning"] == "CHACON":
+                                    if resp["frame"]["infos"]["id"] == "1060074882":
+                                        if resp["frame"]["infos"]["subTypeMeaning"] == "ON":
+                                            #fct.log("DEBUG: CHACON cmd ON")
+                                            fct.http_request('http://localhost:' + str(settings.HTTPD_PORT) + '/api/ext/waterMainRelay/set/1')
+                                            fct.http_request('http://localhost:' + str(settings.HTTPD_PORT) + '/api/ext/waterGardenRelay/set/1')
+                                        elif resp["frame"]["infos"]["subTypeMeaning"] == "OFF":
+                                            #fct.log("DEBUG: CHACON cmd OFF")
+                                            fct.http_request('http://localhost:' + str(settings.HTTPD_PORT) + '/api/ext/waterMainRelay/set/0')
+                                            fct.http_request('http://localhost:' + str(settings.HTTPD_PORT) + '/api/ext/waterGardenRelay/set/0')
+                                        else:
+                                            fct.log("WARNING: CHACON type unknown")
+                                    else:
+                                        fct.log("WARNING: CHACON id unknown")
+                                else:
+                                    fct.log("WARNING: RfPlayer protocol unknown")
+                            except Exception as ex:
+                                fct.log_exception(ex)
+                        else:
+                            fct.log("WARNING: RfPlayer line does not start with 'ZIA33'")
             except Exception as ex:
                 fct.log_exception(ex)
                 self.close()
-            self.timeout_check()
             loop_nb += 1
-            if loop_nb >= 1000000:
-                loop_nb = 0
             time.sleep(0.001)
 
 
