@@ -61,3 +61,17 @@ def run():
             settings.node_list["safety"].write("buzzerRelay set 0")
     except Exception as ex:
         fct.log_exception(ex)
+
+
+def enable():
+    settings.alarm['is_enabled'] = True
+    settings.alarm['triggered'] = False
+    settings.alarm['timeout'] = 0
+    settings.alarm['stopped'] = False
+
+
+def disable():
+    settings.alarm['is_enabled'] = False
+    settings.alarm['triggered'] = False
+    settings.alarm['timeout'] = 0
+    settings.alarm['stopped'] = False

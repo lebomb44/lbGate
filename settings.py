@@ -10,6 +10,7 @@ import copy
 
 import fct
 import lbserial
+import lbrts
 
 
 HTTPD_PORT = 8444
@@ -27,9 +28,16 @@ node_list = dict(
     safety=lbserial.Serial('safety'),
     dining=lbserial.Serial('dining'),
     kitchen=lbserial.Serial('kitchen'),
-    ext=lbserial.Serial('ext'))
+    ext=lbserial.Serial('ext'),
+    entry=lbserial.Serial('entry'))
+
+rts=lbrts.Rts("rfplayer")
 
 acq = dict({
+    'entry': {
+        'ping': {'val': 0, 'fct': "timeout_reset"},
+        'nfcTag': {'val': 0, 'fct': "nfcTag"}
+    },
     'ext': {
         'ping': {'val': 0, 'fct': "timeout_reset"},
         'waterMainRelay': {'val': 0},
@@ -58,11 +66,11 @@ acq = dict({
     },
     'dining': {
         'ping': {'val': 0, 'fct': "timeout_reset"},
-        'windowShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
-                                'url': [
-                                    'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/4/RTS',
-                                    'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/4/RTS',
-                                    'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/4/RTS'
+        'windowShutterButton': {'val': 1, 'fct': "call_rts_if_val_change",
+                                'rts': [
+                                    'DIM %4 ID 4 RTS',
+                                    'ON ID 4 RTS',
+                                    'OFF ID 4 RTS'
                                 ]},
         'windowWindowContact': {'val': 0, 'type': ["alarm"]},
         'windowShutterContact': {'val': 0, 'type': ["alarm"]},
@@ -82,11 +90,11 @@ acq = dict({
         'windowShutterContact': {'val': 0, 'type': ["alarm"]},
         'doorWindowContact': {'val': 0, 'type': ["alarm"]},
         'doorShutterContact': {'val': 0, 'type': ["alarm"]},
-        'doorShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
-                              'url': [
-                                  'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/8/RTS',
-                                  'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/8/RTS',
-                                  'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/8/RTS'
+        'doorShutterButton': {'val': 1, 'fct': "call_rts_if_val_change",
+                              'rts': [
+                                  'DIM %4 ID 8 RTS',
+                                  'ON ID 8 RTS',
+                                  'OFF ID 8 RTS'
                               ]},
         'lightRelay': {'val': 0},
         'entryRelay': {'val': 0},
@@ -98,27 +106,27 @@ acq = dict({
     },
     'bedroom': {
         'ping': {'val': 0, 'fct': "timeout_reset"},
-        'parentsShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
-                                 'url': [
-                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/16/RTS',
-                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/16/RTS',
-                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/16/RTS'
+        'parentsShutterButton': {'val': 1, 'fct': "call_rts_if_val_change",
+                                 'rts': [
+                                     'DIM %4 ID 16 RTS',
+                                     'ON ID 16 RTS',
+                                     'OFF ID 16 RTS'
                                  ]},
         'parentsWindowContact': {'val': 0, 'type': ["alarm"]},
         'parentsShutterContact': {'val': 0, 'type': ["alarm"]},
-        'ellisShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
-                               'url': [
-                                   'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/14/RTS',
-                                   'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/14/RTS',
-                                   'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/14/RTS'
+        'ellisShutterButton': {'val': 1, 'fct': "call_rts_if_val_change",
+                               'rts': [
+                                   'DIM %4 ID 14 RTS',
+                                   'ON ID 14 RTS',
+                                   'OFF ID 14 RTS'
                                ]},
         'ellisWindowContact': {'val': 0, 'type': ["alarm"]},
         'ellisShutterContact': {'val': 0, 'type': ["alarm"]},
-        'desktopShutterButton': {'val': 1, 'fct': "call_url_if_val_change",
-                                 'url': [
-                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/DIM/%4/ID/18/RTS',
-                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/ON/ID/18/RTS',
-                                     'http://localhost:' + str(HTTPD_PORT) + '/api/rts/OFF/ID/18/RTS'
+        'desktopShutterButton': {'val': 1, 'fct': "call_rts_if_val_change",
+                                 'rts': [
+                                     'DIM %4 ID 18 RTS',
+                                     'ON ID 18 RTS',
+                                     'OFF ID 18 RTS'
                                  ]},
         'desktopWindowContact': {'val': 0, 'type': ["alarm"]},
         'desktopShutterContact': {'val': 0, 'type': ["alarm"]},

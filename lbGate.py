@@ -17,7 +17,6 @@ import fct
 import alarm
 import move
 import presence
-import lbrts
 import lbsms
 
 class Monitoring(threading.Thread):
@@ -51,19 +50,25 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
     """ Custom HTTP handler """
     def ok200(self, resp, content_type='text/plain'):
         """ Return OK page """
-        self.send_response(200)
-        self.send_header('Content-Type', content_type)
-        self.end_headers()
-        if content_type == 'text/plain':
-            self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
-        else:
-            self.wfile.write((resp).encode())
+        try:
+            self.send_response(200)
+            self.send_header('Content-Type', content_type)
+            self.end_headers()
+            if content_type == 'text/plain':
+                self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
+            else:
+                self.wfile.write((resp).encode())
+        except Exception as ex:
+            fct.log_exception(ex)
 
     def error404(self, resp):
         """ Return page not found """
-        self.send_response(404)
-        self.end_headers()
-        self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
+        try:
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
+        except Exception as ex:
+            fct.log_exception(ex)
 
     def log_message(self, format, *args):
         """ Overwrite default log function """
@@ -94,16 +99,10 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             if url_tokens[3] == "alarm":
                                 if url_tokens_len > 4:
                                     if url_tokens[4] == "enable":
-                                        settings.alarm['is_enabled'] = True
-                                        settings.alarm['triggered'] = False
-                                        settings.alarm['timeout'] = 0
-                                        settings.alarm['stopped'] = False
+                                        alarm.enable()
                                         self.ok200("Alarm is enabled: ")
                                     elif url_tokens[4] == "disable":
-                                        settings.alarm['is_enabled'] = False
-                                        settings.alarm['triggered'] = False
-                                        settings.alarm['timeout'] = 0
-                                        settings.alarm['stopped'] = False
+                                        alarm.disable()
                                         self.ok200("Alarm is disabled")
                                     else:
                                         try:
@@ -168,7 +167,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             if url_tokens_len > 4:
                                 for token in url_tokens[4:]:
                                     cmd = cmd + " " + token
-                            rts.write(cmd)
+                            settings.rts.write(cmd)
                             self.ok200(node + " " + cmd)
                         else:
                             self.error404("No command for node: " + node)
@@ -195,7 +194,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
 presence = presence.Presence("Presence")
 monitoring = Monitoring("Monitoring")
 http2serial = http.server.HTTPServer(("", settings.HTTPD_PORT), CustomHandler)
-rts=lbrts.Rts("rfplayer")
+
 sms=lbsms.Sms("ttyUSB7")
 
 
@@ -210,7 +209,7 @@ def exit():
         value_node.stop()
     monitoring.stop()
     presence.stop()
-    rts.stop()
+    settings.rts.stop()
     sms.stop()
     time.sleep(2.0)
 
@@ -225,7 +224,7 @@ def signal_term_handler(signal_, frame_):
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_term_handler)
     #sms.start()
-    rts.start()
+    settings.rts.start()
     presence.start()
     monitoring.start()
     for key, value in settings.node_list.items():
