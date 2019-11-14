@@ -1,0 +1,77 @@
+Meteo
+Salon: http://localhost:8444/api/lbgate/json/kitchen/tempSensors/285FA8FB050000C9
+Ellis: http://localhost:8444/api/lbgate/json/bedroom/tempSensors/2841825707000030
+Ext: http://localhost:8444/api/lbgate/json/ext/tempSensors/287979C8070000D1
+Vent: http://localhost:8444/api/lbgate/json/ext/windSpeed
+Pluie: http://localhost:8444/api/lbgate/json/ext/rainFlow
+
+Water Est
+Etat: http://localhost:8444/api/lbgate/json/ext/waterEastRelay
+ON: http://localhost:8444/api/ext/waterEastRelay/set/1 ext waterEastRelay set 1
+OFF: http://localhost:8444/api/ext/waterEastRelay/set/0 ext waterEastRelay set 0
+
+Water Garden
+Etat: http://localhost:8444/api/lbgate/json/ext/waterGardenRelay
+ON: http://localhost:8444/api/ext/waterGardenRelay/set/1 ext waterGardenRelay set 1
+OFF: http://localhost:8444/api/ext/waterGardenRelay/set/0 ext waterGardenRelay set 0
+
+Water Main
+Etat: http://localhost:8444/api/lbgate/json/ext/waterMainRelay
+ON: http://localhost:8444/api/ext/waterMainRelay/set/1 ext waterMainRelay set 1
+OFF: http://localhost:8444/api/ext/waterMainRelay/set/0 ext waterMainRelay set 0
+
+Water Side
+Etat: http://localhost:8444/api/lbgate/json/ext/waterSideRelay
+ON: http://localhost:8444/api/ext/waterSideRelay/set/1 ext waterSideRelay set 1
+OFF: http://localhost:8444/api/ext/waterSideRelay/set/0 ext waterSideRelay set 0
+
+Water South
+Etat: http://localhost:8444/api/lbgate/json/ext/waterSouthRelay
+ON: http://localhost:8444/api/ext/waterSouthRelay/set/1 ext waterSouthRelay set 1
+OFF: http://localhost:8444/api/ext/waterSouthRelay/set/0 ext waterSouthRelay set 0
+
+Water West
+Etat: http://localhost:8444/api/lbgate/json/ext/waterWestRelay
+ON: http://localhost:8444/api/ext/waterWestRelay/set/1 ext waterWestRelay set 1
+OFF: http://localhost:8444/api/ext/waterWestRelay/set/0 ext waterWestRelay set 0
+
+Fenetres:
+Ellis: http://localhost:8444/api/lbgate/json/bedroom/ellisWindowContact
+Parents: http://localhost:8444/api/lbgate/json/bedroom/parentsWindowContact
+Rose: http://localhost:8444/api/lbgate/json/bedroom/desktopWindowContact
+Sous-sol: http://localhost:8444/api/lbgate/json/bedroom/basementWindowContact
+Terrasse: http://localhost:8444/api/lbgate/json/dining/doorWindowContact
+SaM: http://localhost:8444/api/lbgate/json/dining/windowWindowContact
+Veranda: http://localhost:8444/api/lbgate/json/kitchen/doorWindowContact
+Cuisine: http://localhost:8444/api/lbgate/json/kitchen/windowWindowContact
+Entree: http://localhost:8444/api/lbgate/json/safety/doorEntryContact
+
+Volets:
+Ellis: http://localhost:8444/api/lbgate/json/bedroom/ellisShutterContact
+Parents: http://localhost:8444/api/lbgate/json/bedroom/parentsShutterContact
+Rose: http://localhost:8444/api/lbgate/json/bedroom/desktopShutterContact
+Sous-sol: http://localhost:8444/api/lbgate/json/bedroom/basementShutterContact
+Terrasse: http://localhost:8444/api/lbgate/json/dining/doorShutterContact
+SaM: http://localhost:8444/api/lbgate/json/dining/windowShutterContact
+Veranda: http://localhost:8444/api/lbgate/json/kitchen/doorShutterContact
+Cuisine: http://localhost:8444/api/lbgate/json/kitchen/windowShutterContact
+TV: http://localhost:8444/api/lbgate/json/dining/tvShutterContact
+
+LightEntry
+Etat: http://localhost:8444/api/lbgate/json/kitchen/entryRelay
+ON: http://localhost:8444/api/kitchen/entryRelay/set/1 kitchen entryRelay set 1
+OFF: http://localhost:8444/api/kitchen/entryRelay/set/0 kitchen entryRelay set 0
+
+Alarm
+Etat: http://localhost:8444/api/lbgate/alarm/json is_enabled
+Trig: http://localhost:8444/api/lbgate/alarm/json triggered
+Stop: http://localhost:8444/api/lbgate/alarm/json stopped
+Contacts: http://localhost:8444/api/lbgate/alarm/json contacts
+ON: http://localhost:8444/api/lbgate/alarm/enable enabled
+OFF: http://localhost:8444/api/lbgate/alarm/disable disabled
+Time: http://localhost:8444/api/lbgate/alarm/json timeout
+
+ZIA++ON ID 2 RTS
+ZIA++OFF ID 2 RTS
+ZIA++DIM %4 ID 2 RTS
+
