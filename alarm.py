@@ -68,6 +68,7 @@ def enable():
     settings.alarm['triggered'] = False
     settings.alarm['timeout'] = 0
     settings.alarm['stopped'] = False
+    settings.node_list["entry"].write("lightMode set 2")
 
 
 def disable():
@@ -75,3 +76,4 @@ def disable():
     settings.alarm['triggered'] = False
     settings.alarm['timeout'] = 0
     settings.alarm['stopped'] = False
+    settings.node_list["entry"].write("lightMode set 0")
