@@ -99,10 +99,12 @@ def nfcTag(node_, cmd_, arg_array_):
     """ NFC Tag detected """
     log("WARNING nfcTag: node=" + node_ + ", cmd=" + cmd_ + ", arg=" + str(arg_array_))
     if node_ == 'entry' and cmd_ == 'nfcTag' and len(arg_array_) == 3:
-        authorized = ['Olivier Cambon', 'Stephanie Cambon', 'Ellis Cambon', 'Key1 Cambon', 'Key2 Cambon']
-        fullname = str(arg_array_[1]) + " " + str(arg_array_[2])
+        authorized = ['Olivier_Cambon', 'Stephanie_Cambon', 'Ellis_Cambon', 'Key1_Cambon', 'Key2_Cambon']
+        fullname = str(arg_array_[1]) + "_" + str(arg_array_[2])
         if arg_array_[0] == 'get' and fullname in authorized:
             if settings.alarm['is_enabled'] is False:
-                alarm.enable()
+                if alarm.enable() is True:
+                    http_request(settings.ALARM_NAME_URL + fullname)
             else:
                 alarm.disable()
+                http_request(settings.ALARM_NAME_URL + fullname)

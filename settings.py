@@ -22,6 +22,9 @@ EMAIL_URL = ('http://localhost/core/api/jeeApi.php?'
              'apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&'
              'type=cmd&id=157&title=Jeedom&message=')
 
+ALARM_NAME_URL = ('http://localhost/core/api/jeeApi.php?'
+                  'plugin=virtual&apikey=IfTprumNYRf0MxCtGlhXGxAB3GPXpHl0&'
+                  'type=virtual&id=277&value=')
 
 node_list = dict(
     bedroom=lbserial.Serial('bedroom'),

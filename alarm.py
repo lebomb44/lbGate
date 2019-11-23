@@ -6,6 +6,7 @@
 
 
 import copy
+import time
 
 import settings
 import fct
@@ -64,11 +65,35 @@ def run():
 
 
 def enable():
-    settings.alarm['is_enabled'] = True
-    settings.alarm['triggered'] = False
-    settings.alarm['timeout'] = 0
-    settings.alarm['stopped'] = False
-    settings.node_list["entry"].write("lightMode set 2")
+    msg = ""
+    timeout_ = 0
+    trigger_ = True
+    settings.node_list["entry"].write("lightMode set 1")
+    while (timeout_ < 10) and (trigger_ is True):
+        trigger_ = False
+        msg = ""
+        for node_name, node_value in settings.acq.items():
+            for sensor_name, sensor_value in node_value.items():
+                if 'type' in sensor_value:
+                    if "move" in sensor_value['type']:
+                        if sensor_value['val'] == 0:
+                            msg = msg + " " + node_name + "." + sensor_name
+                            trigger_ = True
+        if trigger_ is False:
+            break
+        time.sleep(1)
+        timeout_ += 1
+    if trigger_ is False:
+        settings.alarm['is_enabled'] = True
+        settings.alarm['triggered'] = False
+        settings.alarm['timeout'] = 0
+        settings.alarm['stopped'] = False
+        settings.node_list["entry"].write("lightMode set 2")
+        return True
+    else:
+        fct.send_alert("ERROR : Alarm NOT enabled : " + msg)
+        settings.node_list["entry"].write("lightMode set 0")
+        return False
 
 
 def disable():
