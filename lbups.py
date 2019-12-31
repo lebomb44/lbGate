@@ -2,7 +2,7 @@
 # coding: utf-8
 
 
-""" LbRts"""
+""" LbUps"""
 
 
 import io
@@ -10,13 +10,12 @@ import threading
 import time
 import fcntl
 import os
-import json
 
 import fct
 import settings
 
 
-class Rts(threading.Thread):
+class Ups(threading.Thread):
     """ Class for a serial port """
     def __init__(self, name):
         self.port = "/dev/" + name
@@ -48,11 +47,14 @@ class Rts(threading.Thread):
                             if cserial is None:
                                 cserial = ""
                             else:
+                                #if len(cserial) > 0:
+                                #    print(cserial.hex(), end='')
                                 cserial = cserial.decode(encoding='utf-8', errors='ignore')
                             if len(cserial) > 0:
                                 read_iter_ = read_iter_ + 1
                                 if ord(cserial) == 0:
                                     cserial = ""
+                                print(cserial, end='')
                             else:
                                 cserial = ""
                             if (self.line != "") and (cserial == "\n" or cserial == "\r"):
@@ -71,30 +73,8 @@ class Rts(threading.Thread):
                     if read_iter_ > self.read_iter:
                         self.read_iter = read_iter_
                     if line != "":
-                        if line.startswith("ZIA33"):
-                            try:
-                                resp = json.loads(line[5:])
-                                #fct.log("DEBUG: line_array=" + str(json.dumps(resp)))
-                                if resp["frame"]["header"]["protocolMeaning"] == "CHACON":
-                                    if resp["frame"]["infos"]["id"] == "1060074882":
-                                        if resp["frame"]["infos"]["subTypeMeaning"] == "ON":
-                                            #fct.log("DEBUG: CHACON cmd ON")
-                                            fct.http_request('http://localhost:' + str(settings.HTTPD_PORT) + '/api/ext/waterMainRelay/set/1')
-                                            fct.http_request('http://localhost:' + str(settings.HTTPD_PORT) + '/api/ext/waterGardenRelay/set/1')
-                                        elif resp["frame"]["infos"]["subTypeMeaning"] == "OFF":
-                                            #fct.log("DEBUG: CHACON cmd OFF")
-                                            fct.http_request('http://localhost:' + str(settings.HTTPD_PORT) + '/api/ext/waterMainRelay/set/0')
-                                            fct.http_request('http://localhost:' + str(settings.HTTPD_PORT) + '/api/ext/waterGardenRelay/set/0')
-                                        else:
-                                            fct.log("WARNING: CHACON type unknown")
-                                    else:
-                                        fct.log("WARNING: CHACON id unknown")
-                                else:
-                                    fct.log("WARNING: RfPlayer protocol unknown")
-                            except Exception as ex:
-                                fct.log_exception(ex)
-                        else:
-                            fct.log("WARNING: RfPlayer line does not start with 'ZIA33': " + str(line))
+                        line_array = line.split(" ")
+                        fct.log("DEBUG: line_array=" + str(line_array))
             except Exception as ex:
                 fct.log_exception(ex)
                 self.close()
@@ -125,14 +105,11 @@ class Rts(threading.Thread):
         """ Open the serial port """
         try:
             fct.log("Opening " + self.node_name)
-            self.fd_port = open(self.port, "rb+", buffering=0)
+            self.fd_port = open(self.port, "rb")
             fd_port = self.fd_port.fileno()
+            fct.log("DEBUG fileno=" + str(fd_port))
             flag = fcntl.fcntl(fd_port, fcntl.F_GETFL)
             fcntl.fcntl(fd_port, fcntl.F_SETFL, flag | os.O_NONBLOCK)
-            self.write("HELLO")
-            self.write("FORMAT OFF")
-            self.write("STATUS JSON")
-            self.write("FORMAT JSON")
             self.open_cnt += 1
         except Exception as ex:
             fct.log_exception(ex)
@@ -152,10 +129,8 @@ class Rts(threading.Thread):
         """ Write the serial port if already open """
         try:
             if self.is_open() is True:
-                self.fd_port.write(("ZIA++" + msg + "\r\r").encode('utf-8'))
-                self.fd_port.write(("ZIA++" + msg + "\r\r").encode('utf-8'))
+                self.fd_port.write((msg + "\r\n").encode('utf-8'))
                 fct.log("Write serial to node " + self.node_name + ": " + msg)
                 self.fd_port.flush()
         except Exception as ex:
             fct.log("ERROR write_serial Exception: " + str(ex))
-

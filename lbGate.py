@@ -211,6 +211,7 @@ def exit():
     presence.stop()
     settings.rts.stop()
     sms.stop()
+    settings.ups.stop()
     time.sleep(2.0)
 
 
@@ -223,6 +224,7 @@ def signal_term_handler(signal_, frame_):
 
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_term_handler)
+    #settings.ups.start()
     #sms.start()
     settings.rts.start()
     presence.start()

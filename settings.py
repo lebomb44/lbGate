@@ -11,6 +11,7 @@ import copy
 import fct
 import lbserial
 import lbrts
+import lbups
 
 
 HTTPD_PORT = 8444
@@ -35,6 +36,7 @@ node_list = dict(
     entry=lbserial.Serial('entry'))
 
 rts=lbrts.Rts("rfplayer")
+ups=lbups.Ups("usb/hiddev0")
 
 acq = dict({
     'entry': {
@@ -204,12 +206,8 @@ def run():
                 if 'type' in sensor_value:
                     if "move" in sensor_value['type']:
                         msg = msg + "    " + node_name.rjust(7) + " " + sensor_name.rjust(22) + " = " + str(sensor_value['val']) + "\n"
-        msg = msg + "# alarm_is_enabled = " + str(alarm['is_enabled']) + "\n"
-        msg = msg + "# alarm_triggered = " + str(alarm['triggered']) + "\n"
-        msg = msg + "# alarm_timeout = " + str(alarm['timeout']) + "\n"
-        msg = msg + "# alarm_stopped = " + str(alarm['stopped']) + "\n"
-        msg = msg + "# presence_is_enabled = " + str(presence_is_enabled) + "\n"
-        msg = msg + "# move_is_enabled = " + str(move_is_enabled) + "\n"
+        msg = msg + "# alarm: is_enabled=" + str(alarm['is_enabled']) + " triggered=" + str(alarm['triggered']) + " timeout=" + str(alarm['timeout']) + " stopped=" + str(alarm['stopped']) + "\n"
+        msg = msg + "# presence_is_enabled=" + str(presence_is_enabled) + " move_is_enabled=" + str(move_is_enabled) + "\n"
         msg = msg + "# node_list =\n"
         msg = msg + "    #  node =   is_open |  open_cnt |    cmd_rx |   ping_tx |   ping_rx |        wd | Max/" + str(MAX_NODE_ERRORS) + " | read_iter\n"
         for key, value in node_list.items():
@@ -219,6 +217,7 @@ def run():
             if msg_temp != '':
                 msg = msg + key + " temp:" + msg_temp + "\n"
         msg = msg + "# weather = " + "rain=" + str(acq['ext']['rainFlow']['val']) + " wind=" + str(acq['ext']['windSpeed']['val']) + "\n"
+        msg = msg + "# ups = " + "port=" + str(ups.port) + " is_open=" + str(ups.is_open()) + " open_cnt=" + str(ups.open_cnt) + " iter=" + str(ups.read_iter) + " loop=" + str(ups.is_loop_enabled) + "\n"
         msg = msg + "- run_loop = " + str(run_loop) + "\n"
         log_msg = msg
         flog.write(msg)
