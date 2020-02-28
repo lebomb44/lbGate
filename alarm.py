@@ -88,7 +88,15 @@ def enable():
         settings.alarm['triggered'] = False
         settings.alarm['timeout'] = 0
         settings.alarm['stopped'] = False
-        settings.node_list["entry"].write("lightMode set 2")
+        perimeter_is_open_ = False
+        for node_name, node_value in settings.acq.items():
+            for sensor_name, sensor_value in node_value.items():
+                if 'type' in sensor_value:
+                    if "alarm" in sensor_value['type']:
+                        if sensor_value['val'] == 0:
+                            perimeter_is_open_ = True
+        if perimeter_is_open_ is False:
+            settings.node_list["entry"].write("lightMode set 2")
         return True
     else:
         fct.send_alert("ERROR : Alarm NOT enabled : " + msg)
