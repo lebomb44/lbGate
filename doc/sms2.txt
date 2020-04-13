@@ -1,0 +1,46 @@
+[2019-09-23 18:27:39][DEBUG] : write: ATZ
+[2019-09-23 18:27:39][DEBUG] : write: ATE0
+[2019-09-23 18:27:39][DEBUG] : write: AT+CFUN?
+[2019-09-23 18:27:39][DEBUG] : response: ['+CFUN: 0', 'OK']
+[2019-09-23 18:27:39][DEBUG] : write: AT+CFUN=1 // Set online mode
+[2019-09-23 18:27:39][DEBUG] : write: AT+CMEE=1 // Set error report
+[2019-09-23 18:27:39][DEBUG] : write: AT+CPIN? // Request pin mode
+[2019-09-23 18:27:39][DEBUG] : response: ['+CPIN: READY', 'OK']
+[2019-09-23 18:27:39][DEBUG] : write: AT+CLAC
+[2019-09-23 18:27:39][DEBUG] : write: AT+CGMI // Request manufacturer
+[2019-09-23 18:27:39][DEBUG] : write: AT+COPS=3,0 // Set operator
+[2019-09-23 18:27:39][DEBUG] : write: AT+CMGF=0 // Set message format (0=PDU)
+[2019-09-23 18:27:39][DEBUG] : write: AT+CSCA?
+[2019-09-23 18:27:39][DEBUG] : write: AT+CSMP=49,167,0,0
+[2019-09-23 18:27:39][DEBUG] : write: AT+CSCA?
+[2019-09-23 18:27:39][DEBUG] : write: AT+CPMS=?
+[2019-09-23 18:27:39][DEBUG] : write: AT+CPMS="ME","ME","ME" // Select message storage
+[2019-09-23 18:27:39][DEBUG] : write: AT+CNMI=2,1,0,2 // Indicate new message to TE
+[2019-09-23 18:27:39][DEBUG] : write: AT+CLIP=1
+[2019-09-23 18:27:39][DEBUG] : write: AT+CRC=1
+[2019-09-23 18:27:39][DEBUG] : write: AT+CVHU=0
+[2019-09-23 18:27:39][DEBUG] : write: AT+CREG?
+[2019-09-23 18:27:39][DEBUG] : response: ['+CREG: 0,1', 'OK']
+[2019-09-23 18:27:40][DEBUG] : write: AT+CSQ
+[2019-09-23 18:27:40][DEBUG] : response: ['+CSQ: 15,99', 'OK']
+[2019-09-23 18:27:40][DEBUG] : write: AT+COPS?
+[2019-09-23 18:27:41][DEBUG] : response: ['+COPS: 0,0,"",2', 'OK']
+[2019-09-23 18:27:41][DEBUG] : write: AT+CPMS="ME","ME","ME"
+[2019-09-23 18:27:41][DEBUG] : response: ['+CPMS: 0,255,0,255,0,255', 'OK']
+[2019-09-23 18:27:41][DEBUG] : write: AT+CMGD=1,4
+[2019-09-23 18:27:41][DEBUG] : write: AT+CPMS="SM","SM","SM"
+[2019-09-23 18:27:41][DEBUG] : response: ['+CPMS: 0,100,0,100,0,100', 'OK']
+[2019-09-23 18:28:12][DEBUG] : write: AT+CMGL=0
+[2019-09-23 18:40:07][DEBUG] : write: AT+CMGS=58
+[2019-09-23 18:40:07][DEBUG] : response: ['> ']
+[2019-09-23 18:40:07][DEBUG] : write: 0021000AA16098531095000034C3F2380D2ACFE9A0BA1B442FCFE9207219D42ECFE7E17319047FD7E5207618347EB7DB6137B90C7AB2D3F674590E
+[2019-09-23 18:40:10][DEBUG] : response: ['+CMGS: 119', 'OK']
+
+ATZ
+ATE0
+AT+CFUN=1
+AT+CMGF=1
+AT+CMGS="0689350159"
+> test
+CTRL+Z
+
