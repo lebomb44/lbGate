@@ -39,6 +39,7 @@ def run():
                                         move_timeout = 0
                                     elif sensor_name == "moveEntryContact":
                                         settings.node_list["kitchen"].write("lightRelay set 1")
+                                        settings.node_list["safety"].write("lightAlarm set 1")
                                         move_timeout = 0
             if move_timeout < 30:
                 move_timeout = move_timeout + 1
@@ -46,6 +47,7 @@ def run():
                     settings.node_list["bedroom"].write("lightRelay set 0")
                     settings.node_list["dining"].write("lightRelay set 0")
                     settings.node_list["kitchen"].write("lightRelay set 0")
+                    settings.node_list["safety"].write("lightAlarm set 0")
         else:
             try:
                 settings.node_list["safety"].write("moveRelay set 0")
