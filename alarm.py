@@ -34,7 +34,10 @@ def run():
                         settings.alarm['stopped'] = True
                 else:
                     settings.alarm['timeout'] = settings.alarm['timeout'] + 1
+                    # Turn on the buzzer
                     settings.node_list["safety"].write("buzzerRelay set 1")
+                    # Close all the shutters
+                    settings.rts.write("OFF ID 22 RTS")
             else:
                 msg = ""
                 for node_name, node_value in settings.acq.items():
