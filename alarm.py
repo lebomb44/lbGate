@@ -57,6 +57,9 @@ def run():
                     settings.alarm['stopped'] = False
                     settings.node_list["safety"].write("buzzerRelay set 1")
                     fct.send_alert("ALARM started:" + msg)
+                    # Turn ON the music
+                    # requests.post("http://osmc:8080/jsonrpc?Player.Stop", '{"jsonrpc":"2.0","method":"Player.Stop","params":[0],"id":1}')
+                    # requests.post("http://osmc:8080/jsonrpc?Player.Open", '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"/home/osmc/alarm.mp3"},"options":{"repeat":"all"}},"id":2}')
                 else:
                     settings.node_list["safety"].write("buzzerRelay set 0")
         else:
