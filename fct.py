@@ -38,13 +38,15 @@ def http_request(url):
 def send_sms(msg):
     """ Send SMS message """
     log("Send SMS: " + msg)
-    http_request(settings.SMS_URL + urllib.parse.quote(msg))
+    http_request(settings.SMS_URL1 + urllib.parse.quote(msg))
+    http_request(settings.SMS_URL2 + urllib.parse.quote(msg))
 
 
 def send_email(msg):
     """ Send e-mail """
     log("Send EMAIL: " + msg)
-    http_request(settings.EMAIL_URL + urllib.parse.quote(msg))
+    http_request(settings.EMAIL_URL1 + urllib.parse.quote(msg))
+    http_request(settings.EMAIL_URL2 + urllib.parse.quote(msg))
 
 
 def send_alert(msg):
