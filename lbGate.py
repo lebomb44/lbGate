@@ -100,10 +100,16 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                 if url_tokens_len > 4:
                                     if url_tokens[4] == "enable":
                                         alarm.enable()
-                                        self.ok200("Alarm is enabled: ")
+                                        self.ok200("Alarm is enabled")
                                     elif url_tokens[4] == "disable":
                                         alarm.disable()
                                         self.ok200("Alarm is disabled")
+                                    elif url_tokens[4] == "use_move":
+                                        settings.alarm['use_move'] = True
+                                        self.ok200("Use Move")
+                                    elif url_tokens[4] == "nouse_move":
+                                        settings.alarm['use_move'] = False
+                                        self.ok200("Do not use move")
                                     else:
                                         try:
                                             token_nbs = range(5, url_tokens_len)
@@ -115,6 +121,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                             self.error404("Bad path in 'alarm'")
                                 else:
                                     self.ok200("Alarm is = " + str(settings.alarm['is_enabled']) +
+                                               "\nUseMove = " + str(settings.alarm['use_move']) +
                                                "\nTrigger = " + str(settings.alarm['triggered']) +
                                                "\nTimer = " + str(settings.alarm['timeout']) +
                                                "\nStop = " + str(settings.alarm['stopped']))
@@ -193,7 +200,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
 
 presence = presence.Presence("Presence")
 monitoring = Monitoring("Monitoring")
-http2serial = http.server.HTTPServer(("", settings.HTTPD_PORT), CustomHandler)
+http2serial = http.server.ThreadingHTTPServer(("", settings.HTTPD_PORT), CustomHandler)
 
 sms=lbsms.Sms("ttyUSB7")
 

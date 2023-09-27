@@ -18,10 +18,10 @@ HTTPD_PORT = 8444
 MAX_NODE_ERRORS = 10000
 SMS_URL1 = ('http://localhost/core/api/jeeApi.php?'
            'apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&'
-           'type=cmd&id=111&title=Jeedom&message=')
+           'type=cmd&id=379&title=Jeedom&message=')
 SMS_URL2 = ('http://localhost/core/api/jeeApi.php?'
            'apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&'
-           'type=cmd&id=159&title=Jeedom&message=')
+           'type=cmd&id=380&title=Jeedom&message=')
 EMAIL_URL1 = ('http://localhost/core/api/jeeApi.php?'
              'apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&'
              'type=cmd&id=157&title=Jeedom&message=')
@@ -158,6 +158,7 @@ acq = dict({
 alarm = dict({
     'initial_status': copy.deepcopy(acq),
     'is_enabled': False,
+    'use_move': True,
     'triggered': False,
     'timeout': 0,
     'stopped': False,
@@ -213,7 +214,7 @@ def run():
                 if 'type' in sensor_value:
                     if "move" in sensor_value['type']:
                         msg = msg + "    " + node_name.rjust(7) + " " + sensor_name.rjust(22) + " = " + str(sensor_value['val']) + "\n"
-        msg = msg + "# alarm: is_enabled=" + str(alarm['is_enabled']) + " triggered=" + str(alarm['triggered']) + " timeout=" + str(alarm['timeout']) + " stopped=" + str(alarm['stopped']) + "\n"
+        msg = msg + "# alarm: is_enabled=" + str(alarm['is_enabled']) + " use_move=" + str(alarm['use_move']) + " triggered=" + str(alarm['triggered']) + " timeout=" + str(alarm['timeout']) + " stopped=" + str(alarm['stopped']) + "\n"
         msg = msg + "# presence_is_enabled=" + str(presence_is_enabled) + " move_is_enabled=" + str(move_is_enabled) + "\n"
         msg = msg + "# node_list =\n"
         msg = msg + "    #  node =   is_open |  open_cnt |    cmd_rx |   ping_tx |   ping_rx |        wd | Max/" + str(MAX_NODE_ERRORS) + " | read_iter\n"

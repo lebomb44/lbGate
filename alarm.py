@@ -48,10 +48,11 @@ def run():
                                 if sensor_value['val'] != settings.alarm['initial_status'][node_name][sensor_name]['val']:
                                     msg = msg + " " + node_name + "." + sensor_name
                                     settings.alarm['triggered'] = True
-                            if "move" in sensor_value['type']:
-                                if sensor_value['val'] == 0:
-                                    msg = msg + " " + node_name + "." + sensor_name
-                                    settings.alarm['triggered'] = True
+                            if settings.alarm['use_move'] is True:
+                                if "move" in sensor_value['type']:
+                                    if sensor_value['val'] == 0:
+                                        msg = msg + " " + node_name + "." + sensor_name
+                                        settings.alarm['triggered'] = True
                 if settings.alarm['triggered'] is True:
                     settings.alarm['timeout'] = 0
                     settings.alarm['stopped'] = False
