@@ -16,18 +16,6 @@ import lbups
 
 HTTPD_PORT = 8444
 MAX_NODE_ERRORS = 10000
-SMS_URL1 = ('http://localhost/core/api/jeeApi.php?'
-           'apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&'
-           'type=cmd&id=379&title=Jeedom&message=')
-SMS_URL2 = ('http://localhost/core/api/jeeApi.php?'
-           'apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&'
-           'type=cmd&id=380&title=Jeedom&message=')
-EMAIL_URL1 = ('http://localhost/core/api/jeeApi.php?'
-             'apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&'
-             'type=cmd&id=157&title=Jeedom&message=')
-EMAIL_URL2 = ('http://localhost/core/api/jeeApi.php?'
-             'apikey=FddiT3sOcnrs5FcPh35kyTJLhQRdnFra&'
-             'type=cmd&id=158&title=Jeedom&message=')
 
 ALARM_NAME_URL = ('http://localhost/core/api/jeeApi.php?'
                   'plugin=virtual&type=event&'

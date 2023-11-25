@@ -18,6 +18,7 @@ import alarm
 import move
 import presence
 import lbsms
+import lbemail
 
 class Monitoring(threading.Thread):
     """ Monitoring class """
@@ -78,7 +79,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
         """ Callback on HTTP GET request """
         url_tokens = self.path.split('/')
         url_tokens_len = len(url_tokens)
-        fct.log(str(url_tokens))
+        #fct.log(str(url_tokens))
         if url_tokens_len > 1:
             api = url_tokens[1]
             if api == "api":
@@ -180,12 +181,55 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             self.error404("No command for node: " + node)
                     elif node == "sms":
                         if url_tokens_len > 3:
-                            cmd = url_tokens[3]
-                            if url_tokens_len > 4:
-                                for token in url_tokens[4:]:
-                                    cmd = cmd + " " + token
-                            sms.write(cmd)
-                            self.ok200(node + " " + cmd)
+                            if url_tokens[3] == "sendto":
+                                if url_tokens_len == 6:
+                                    sms.sendto(url_tokens[4], url_tokens[5])
+                                    self.ok200("Sending SMS to " + url_tokens[4] + ": " + url_tokens[5])
+                                else:
+                                    self.error404("Bad number of argment for command sms.sendto")
+                            elif url_tokens[3] == "send":
+                                if url_tokens_len == 5:
+                                    fct.send_sms(url_tokens[4])
+                                    self.ok200("Sending SMS to all : " + url_tokens[4])
+                                else:
+                                    self.error404("Bad number of argment for command fct.send_sms")
+                            elif url_tokens[3] == "json":
+                                try:
+                                    self.ok200(json.dumps(sms.dict, sort_keys=True, indent=4), content_type="application/json")
+                                except:
+                                    self.error404("Bad json dump of 'sms' node")
+                            else:
+                                self.error404("Bad command for node " + node + ": " + url_tokens[3])
+                        else:
+                            self.error404("No command for node: " + node)
+                    elif node == "email":
+                        if url_tokens_len > 3:
+                            if url_tokens[3] == "sendto":
+                                if url_tokens_len == 7:
+                                    lbemail.sendto(url_tokens[4], url_tokens[5], url_tokens[6])
+                                    self.ok200("Sending email to " + url_tokens[4] + ", Object: " + url_tokens[5] + ", Message: " + url_tokens[6])
+                                else:
+                                    self.error404("Bad number of argment for command lbemail.sendto")
+                            elif url_tokens[3] == "send":
+                                if url_tokens_len == 5:
+                                    fct.send_email(url_tokens[4])
+                                    self.ok200("Sending email to all : " + url_tokens[4])
+                                else:
+                                    self.error404("Bad number of argment for command fct.send_email")
+                            else:
+                                self.error404("Bad command for node " + node + ": " + url_tokens[3])
+                        else:
+                            self.error404("No command for node: " + node)
+                    elif node == "alert":
+                        if url_tokens_len > 3:
+                            if url_tokens[3] == "send":
+                                if url_tokens_len == 5:
+                                    fct.send_alert(url_tokens[4])
+                                    self.ok200("Sending alert to all : " + url_tokens[4])
+                                else:
+                                    self.error404("Bad number of argment for command fct.send_alert")
+                            else:
+                                self.error404("Bad command for node " + node + ": " + url_tokens[3])
                         else:
                             self.error404("No command for node: " + node)
                     else:
@@ -202,7 +246,8 @@ presence = presence.Presence("Presence")
 monitoring = Monitoring("Monitoring")
 http2serial = http.server.ThreadingHTTPServer(("", settings.HTTPD_PORT), CustomHandler)
 
-sms=lbsms.Sms("ttyUSB7")
+sms=lbsms.Sms("sms")
+fct.sms = sms
 
 
 def exit():
@@ -232,7 +277,7 @@ def signal_term_handler(signal_, frame_):
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_term_handler)
     #settings.ups.start()
-    #sms.start()
+    sms.start()
     settings.rts.start()
     presence.start()
     monitoring.start()
