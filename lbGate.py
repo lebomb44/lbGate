@@ -59,6 +59,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
             else:
                 self.wfile.write((resp).encode())
+            self.wfile.flush()
         except Exception as ex:
             fct.log_exception(ex)
 
@@ -68,6 +69,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
             self.wfile.write((time.strftime('%Y/%m/%d %H:%M:%S: ') + resp).encode())
+            self.wfile.flush()
         except Exception as ex:
             fct.log_exception(ex)
 
@@ -183,14 +185,14 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                         if url_tokens_len > 3:
                             if url_tokens[3] == "sendto":
                                 if url_tokens_len == 6:
-                                    sms.sendto(url_tokens[4], url_tokens[5])
                                     self.ok200("Sending SMS to " + url_tokens[4] + ": " + url_tokens[5])
+                                    sms.sendto(url_tokens[4], url_tokens[5])
                                 else:
                                     self.error404("Bad number of argment for command sms.sendto")
                             elif url_tokens[3] == "send":
                                 if url_tokens_len == 5:
-                                    fct.send_sms(url_tokens[4])
                                     self.ok200("Sending SMS to all : " + url_tokens[4])
+                                    fct.send_sms(url_tokens[4])
                                 else:
                                     self.error404("Bad number of argment for command fct.send_sms")
                             elif url_tokens[3] == "json":
@@ -224,8 +226,8 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                         if url_tokens_len > 3:
                             if url_tokens[3] == "send":
                                 if url_tokens_len == 5:
-                                    fct.send_alert(url_tokens[4])
                                     self.ok200("Sending alert to all : " + url_tokens[4])
+                                    fct.send_alert(url_tokens[4])
                                 else:
                                     self.error404("Bad number of argment for command fct.send_alert")
                             else:

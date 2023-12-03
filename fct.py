@@ -48,6 +48,14 @@ def send_sms(msg):
         sms.sendto(phone, msg)
 
 
+def call():
+    """ Phhone call """
+    global sms
+    log("Phone call")
+    for phone in myconfig.SMS:
+        sms.callto(phone)
+
+
 def send_email(msg):
     """ Send e-mail """
     msg = msg + " " + time.strftime('%Y/%m/%d %H:%M:%S')
@@ -56,10 +64,12 @@ def send_email(msg):
         lbemail.sendto(email, msg, msg)
 
 
-def send_alert(msg):
+def send_alert(msg, with_call=False):
     """ Send a global alert (SMS + E-mail) """
     send_sms(msg)
     send_email(msg)
+    if with_call is True:
+        call()
 
 
 def call_rts_if_val_change(node_, cmd_, arg_array_):
@@ -117,3 +127,4 @@ def nfcTag(node_, cmd_, arg_array_):
             else:
                 alarm.disable()
                 http_request(settings.ALARM_NAME_URL + fullname)
+

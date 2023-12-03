@@ -89,12 +89,14 @@ class Sms(threading.Thread):
                                     fct.log_exception(ex)
                     if self.dict["nb_loop"] % 50000 == 0:
                         self.config()
-                    if self.smsqueue.empty() is False:
-                        try:
-                            sms = self.smsqueue.get()
-                            self.sendto_now(sms["phone"], sms["msg"])
-                        except Exception as ex:
-                            fct.log_exception(ex)
+                    if self.dict["nb_loop"] % 1000 == 0:
+                        if self.smsqueue.empty() is False:
+                            try:
+                                msg = self.smsqueue.get()
+                                if msg != '':
+                                    self.write(msg)
+                            except Exception as ex:
+                                fct.log_exception(ex)
                 else:
                     self.dict["signal_quality"] = 0
             except Exception as ex:
@@ -156,7 +158,7 @@ class Sms(threading.Thread):
         try:
             if self.is_open() is True:
                 self.fd_port.write((msg + "\r").encode('utf-8'))
-                #fct.log("Write serial to node " + self.dict["node_name"] + ": " + msg)
+                #fct.log("DEBUG: Write serial to node " + self.dict["node_name"] + ": " + msg)
                 self.fd_port.flush()
         except Exception as ex:
             fct.log_exception(ex)
@@ -165,36 +167,44 @@ class Sms(threading.Thread):
     def config(self):
         """ Configure modem """
         try:
-            self.write("ATZ")
-            time.sleep(1.0)
-            self.write("AT+CMGF=1")
-            time.sleep(1.0)
-            self.write('AT+CSCA="+33695000695"')
-            time.sleep(1.0)
-            self.write("AT+CSQ")
-            time.sleep(1.0)
+            self.smsqueue.put('ATZ')
+            self.smsqueue.put('')
+            self.smsqueue.put('AT+CMGF=1')
+            self.smsqueue.put('')
+            self.smsqueue.put('AT+CSCA="+33695000695"')
+            self.smsqueue.put('')
+            self.smsqueue.put('AT+CSQ')
+            self.smsqueue.put('')
             self.dict["nb_config"] += 1
         except Exception as ex:
             fct.log_exception(ex)
 
 
-    def sendto_now(self, phone, msg):
+    def sendto(self, phone, msg):
         """ Send SMS message to phone number """
         try:
             msg = urllib.parse.unquote_plus(msg)
-            self.write('AT+CMGS="' + str(phone) + '"')
-            time.sleep(1.0)
-            self.write(str(msg) + "\x1A")
-            time.sleep(5.0)
+            self.smsqueue.put('AT+CMGS="' + str(phone) + '"')
+            self.smsqueue.put('')
+            self.smsqueue.put(str(msg) + "\x1A")
+            self.smsqueue.put('')
+            self.smsqueue.put('')
+            self.smsqueue.put('')
+            self.smsqueue.put('')
+            self.smsqueue.put('')
         except Exception as ex:
             fct.log_exception(ex)
 
 
-    def sendto(self, phone, msg):
+    def callto(self, phone):
+        """ Send SMS message to phone number """
         try:
-            sms = dict()
-            sms["phone"] = phone
-            sms["msg"] = msg
-            self.smsqueue.put(sms)
+            self.smsqueue.put('ATD' + str(phone) + ';')
+            for i in range(0,30):
+                self.smsqueue.put('')
+            self.smsqueue.put('ATH')
+            self.smsqueue.put('')
+            self.smsqueue.put('')
         except Exception as ex:
             fct.log_exception(ex)
+
