@@ -12,10 +12,8 @@ import fcntl
 import os
 import queue
 import urllib.parse
-import json
 
 import fct
-import settings
 
 
 class Sms(threading.Thread):

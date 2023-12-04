@@ -2,7 +2,7 @@
 # coding: utf-8
 
 
-""" Move sensor management """
+""" Alarm management """
 
 
 import copy

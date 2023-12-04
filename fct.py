@@ -60,8 +60,7 @@ def send_email(msg):
     """ Send e-mail """
     msg = msg + " " + time.strftime('%Y/%m/%d %H:%M:%S')
     log("Send EMAIL: " + msg)
-    for email in myconfig.EMAIL:
-        lbemail.sendto(email, msg, msg)
+    lbemail.sendto(myconfig.EMAIL, msg, msg)
 
 
 def send_alert(msg, with_call=False):

@@ -8,6 +8,7 @@
 import smtplib
 import urllib.parse
 
+import settings
 import fct
 import myconfig
 
@@ -20,13 +21,15 @@ def sendto(email, object, msg):
         mail.ehlo()
         mail.starttls()
         sender = myconfig.EMAIL_LOGIN
-        recipient = email
+        recipient = str(email)
+        recipient = recipient.replace("[","").replace("]","").replace("'","")
         mail.login(myconfig.EMAIL_LOGIN, myconfig.EMAIL_PASSWORD)
-        header = 'To:' + recipient + '\n' \
-        + 'From:' + myconfig.EMAIL_SENDER + '\n' \
+        header = 'To:' + str(recipient) + '\n' \
+        + 'From:Jeedom ' + settings.HOSTNAME + ' <' + myconfig.EMAIL_LOGIN + '>\n' \
         + 'subject:' + object + '\n'
         content = header + content
         mail.sendmail(sender, recipient, content)
         mail.close()
     except Exception as ex:
         fct.log_exception(ex)
+
