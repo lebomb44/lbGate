@@ -17,7 +17,7 @@ def sendto(email, object, msg):
     try:
         object = urllib.parse.unquote_plus(object)
         content = urllib.parse.unquote_plus(msg)
-        mail = smtplib.SMTP(myconfig.EMAIL_SMTP, 587)
+        mail = smtplib.SMTP(myconfig.EMAIL_SMTP, 587, timeout=5.0)
         mail.ehlo()
         mail.starttls()
         sender = myconfig.EMAIL_LOGIN

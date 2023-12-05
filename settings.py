@@ -22,6 +22,8 @@ ALARM_NAME_URL = ('http://localhost/core/api/jeeApi.php?'
                   'apikey=IfTprumNYRf0MxCtGlhXGxAB3GPXpHl0&'
                   'id=277&value=')
 
+HOSTNAME = "Niepce"
+
 node_list = dict(
     bedroom=lbserial.Serial('bedroom'),
     safety=lbserial.Serial('safety'),
