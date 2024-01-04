@@ -30,12 +30,25 @@ node_list = dict(
     dining=lbserial.Serial('dining'),
     kitchen=lbserial.Serial('kitchen'),
     ext=lbserial.Serial('ext'),
-    entry=lbserial.Serial('entry'))
+    entry=lbserial.Serial('entry'),
+    heatpump=lbserial.Serial('heatpump'))
 
 rts=lbrts.Rts("rfplayer")
 ups=lbups.Ups("usb/hiddev0")
 
 acq = dict({
+    'heatpump': {
+        'ping': {'val': 0, 'fct': "timeout_reset"},
+        'power': {'val': "UNKNOWN"},
+        'mode': {'val': "UNKNOWN"},
+        'temp': {'val': 0.0},
+        'fanspeed': {'val': "UNKNOWN"},
+        'vane': {'val': 0},
+        'widevane': {'val': "UNKNOWN"},
+        'isee': {'val': 0},
+        'roomtemp': {'val': 0.0},
+        'operating': {'val': 0}
+    },
     'entry': {
         'ping': {'val': 0, 'fct': "timeout_reset"},
         'nfcTag': {'val': 0, 'fct': "nfcTag"}

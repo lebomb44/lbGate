@@ -35,6 +35,11 @@ class Serial(threading.Thread):
     def run(self):
         """ Cyclic execution to poll for received characters """
         loop_nb = 1
+        if self.node_name == "heatpump":
+            while (self.is_loop_enabled is True) and (loop_nb < 60):
+                time.sleep(1.0)
+                loop_nb += 1
+        loop_nb = 1
         while self.is_loop_enabled is True:
             try:
                 #fct.log("DEBUG: " + self.node_name + " loop " + str(loop_nb))
@@ -172,7 +177,7 @@ class Serial(threading.Thread):
         try:
             if self.is_open() is True:
                 self.fd_port.write((self.node_name + " " + msg + "\n").encode('utf-8'))
-                # fct.log("Write serial to node " + self.node_name)
+                # fct.log("Write serial to node " + self.node_name + " " + msg)
                 self.fd_port.flush()
         except Exception as ex:
             fct.log("ERROR write_serial Exception: " + str(ex))
