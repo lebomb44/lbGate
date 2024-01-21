@@ -12,6 +12,7 @@ import fct
 import lbserial
 import lbrts
 import lbups
+import lbsms
 
 
 HTTPD_PORT = 8444
@@ -35,6 +36,7 @@ node_list = dict(
 
 rts=lbrts.Rts("rfplayer")
 ups=lbups.Ups("usb/hiddev0")
+sms=lbsms.Sms("sms")
 
 acq = dict({
     'heatpump': {
@@ -229,6 +231,7 @@ def run():
                 msg = msg + key + " temp:" + msg_temp + "\n"
         msg = msg + "# weather = " + "rain=" + str(acq['ext']['rainFlow']['val']) + " wind=" + str(acq['ext']['windSpeed']['val']) + "\n"
         msg = msg + "# ups = " + "port=" + str(ups.port) + " is_open=" + str(ups.is_open()) + " open_cnt=" + str(ups.open_cnt) + " iter=" + str(ups.read_iter) + " loop=" + str(ups.is_loop_enabled) + "\n"
+        msg = msg + "# sms = " + "port=" + str(sms.dict["port"]) + " is_open=" + str(sms.is_open()) + " open_cnt=" + str(sms.dict["open_cnt"]) + " tx=" + str(sms.dict["cmd_tx_cnt"]) + " rx=" + str(sms.dict["cmd_rx_cnt"]) + " rx_ok=" + str(sms.dict["cmd_rx_ok_cnt"]) + " config=" + str(sms.dict["nb_config"]) + " signal_quality=" + str(sms.dict["cmd_rx_signal_quality_cnt"]) + " iter=" + str(sms.read_iter) + " loop=" + str(sms.dict["nb_loop"]) + " loop_on=" + str(sms.dict["is_loop_enabled"]) + "\n"
         msg = msg + "- run_loop = " + str(run_loop) + "\n"
         log_msg = msg
         flog.write(msg)

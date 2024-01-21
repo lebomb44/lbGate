@@ -17,7 +17,6 @@ import fct
 import alarm
 import move
 import presence
-import lbsms
 import lbemail
 
 class Monitoring(threading.Thread):
@@ -186,7 +185,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                             if url_tokens[3] == "sendto":
                                 if url_tokens_len == 6:
                                     self.ok200("Sending SMS to " + url_tokens[4] + ": " + url_tokens[5])
-                                    sms.sendto(url_tokens[4], url_tokens[5])
+                                    settings.sms.sendto(url_tokens[4], url_tokens[5])
                                 else:
                                     self.error404("Bad number of argment for command sms.sendto")
                             elif url_tokens[3] == "send":
@@ -197,7 +196,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                                     self.error404("Bad number of argment for command fct.send_sms")
                             elif url_tokens[3] == "json":
                                 try:
-                                    self.ok200(json.dumps(sms.dict, sort_keys=True, indent=4), content_type="application/json")
+                                    self.ok200(json.dumps(settings.sms.dict, sort_keys=True, indent=4), content_type="application/json")
                                 except:
                                     self.error404("Bad json dump of 'sms' node")
                             else:
@@ -248,9 +247,6 @@ presence = presence.Presence("Presence")
 monitoring = Monitoring("Monitoring")
 http2serial = http.server.ThreadingHTTPServer(("", settings.HTTPD_PORT), CustomHandler)
 
-sms=lbsms.Sms("sms")
-fct.sms = sms
-
 
 def exit():
     """ Stop HTTP server, stop serial threads and monitoring thread """
@@ -264,7 +260,7 @@ def exit():
     monitoring.stop()
     presence.stop()
     settings.rts.stop()
-    sms.stop()
+    settings.sms.stop()
     settings.ups.stop()
     time.sleep(2.0)
 
@@ -279,7 +275,7 @@ def signal_term_handler(signal_, frame_):
 if __name__ == '__main__':
     signal.signal(signal.SIGTERM, signal_term_handler)
     #settings.ups.start()
-    sms.start()
+    settings.sms.start()
     settings.rts.start()
     presence.start()
     monitoring.start()

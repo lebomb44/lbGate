@@ -17,8 +17,6 @@ import alarm
 import lbemail
 
 
-sms = None
-
 def log(msg):
     """ Print message with a time header """
     print(time.strftime('%Y/%m/%d %H:%M:%S: ') + msg)
@@ -41,11 +39,10 @@ def http_request(url):
 
 def send_sms(msg):
     """ Send SMS message """
-    global sms
     msg = msg + " " + time.strftime('%Y/%m/%d %H:%M:%S')
     log("Send SMS: " + msg)
     for phone in myconfig.SMS:
-        sms.sendto(phone, msg)
+        settings.sms.sendto(phone, msg)
 
 
 def call():
@@ -53,7 +50,7 @@ def call():
     global sms
     log("Phone call")
     for phone in myconfig.SMS:
-        sms.callto(phone)
+        settings.sms.callto(phone)
 
 
 def send_email(msg):

@@ -27,6 +27,10 @@ class Sms(threading.Thread):
         self.dict["nb_config"] = 0
         self.dict["nb_loop"] = 0
         self.dict["is_loop_enabled"] = True
+        self.dict["cmd_tx_cnt"] = 0
+        self.dict["cmd_rx_cnt"] = 0
+        self.dict["cmd_rx_ok_cnt"] = 0
+        self.dict["cmd_rx_signal_quality_cnt"] = 0
         self.fd_port = io.IOBase()
         self.line = ""
         self.smsqueue = queue.Queue(1000)
@@ -76,15 +80,20 @@ class Sms(threading.Thread):
                     if read_iter_ > self.read_iter:
                         self.read_iter = read_iter_
                     if line != "":
-                        line_array = line.split(" ")
-                        #fct.log("DEBUG: line_array=" + str(line_array))
-                        if len(line_array) == 2:
-                            if line_array[0] == "+CSQ:":
-                                try:
-                                    self.dict["signal_quality"] = int(round(float(line_array[1].replace(",","."))))
-                                except Exception as ex:
-                                    self.dict["signal_quality"] = 0
-                                    fct.log_exception(ex)
+                        self.dict["cmd_rx_cnt"] += 1
+                        if "OK" in line:
+                            self.dict["cmd_rx_ok_cnt"] += 1
+                        else:
+                            line_array = line.split(" ")
+                            #fct.log("DEBUG: line_array=" + str(line_array))
+                            if len(line_array) == 2:
+                                if line_array[0] == "+CSQ:":
+                                    try:
+                                        self.dict["signal_quality"] = int(round(float(line_array[1].replace(",","."))))
+                                        self.dict["cmd_rx_signal_quality_cnt"] += 1
+                                    except Exception as ex:
+                                        self.dict["signal_quality"] = 0
+                                        fct.log_exception(ex)
                     if self.dict["nb_loop"] % 50000 == 0:
                         self.config()
                     if self.dict["nb_loop"] % 1000 == 0:
@@ -136,6 +145,10 @@ class Sms(threading.Thread):
             self.dict["open_cnt"] += 1
             self.dict["nb_config"] = 0
             self.dict["signal_quality"] = 0
+            self.dict["cmd_tx_cnt"] = 0
+            self.dict["cmd_rx_cnt"] = 0
+            self.dict["cmd_rx_ok_cnt"] = 0
+            self.dict["cmd_rx_signal_quality_cnt"] = 0
         except Exception as ex:
             fct.log_exception(ex)
 
@@ -158,8 +171,10 @@ class Sms(threading.Thread):
                 self.fd_port.write((msg + "\r").encode('utf-8'))
                 #fct.log("DEBUG: Write serial to node " + self.dict["node_name"] + ": " + msg)
                 self.fd_port.flush()
+                self.dict["cmd_tx_cnt"] += 1
         except Exception as ex:
             fct.log_exception(ex)
+            self.close()
 
 
     def config(self):
