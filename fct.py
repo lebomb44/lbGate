@@ -70,7 +70,7 @@ def send_alert(msg, with_call=False):
 
 def call_rts_if_val_change(node_, cmd_, arg_array_):
     """ Call RTS command only if value change from previous state """
-    #if node_ == "kitchen":
+    # if node_ == "dining":
     #    log("DEBUG call_rts_if_val_change: node=" + node_ + ", cmd=" + cmd_ + ", arg=" + str(arg_array_))
     if node_ in settings.acq:
         if cmd_ in settings.acq[node_]:
