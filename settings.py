@@ -50,6 +50,10 @@ acq = dict({
         'isee': {'val': 0},
         'roomtemp': {'val': 0.0},
         'operating': {'val': 0},
+        'OPTARIF': {'val': "UNKNOWN"},
+        'HCHC': {'val': 0},
+        'HCHP': {'val': 0},
+        'PTEC': {'val': "UNKNOWN"},
         'BASE': {'val': 0},
         'IINST': {'val': 0},
         'PAPP': {'val': 0}
