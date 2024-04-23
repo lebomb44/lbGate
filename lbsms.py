@@ -8,6 +8,7 @@
 import io
 import threading
 import time
+import datetime
 import fcntl
 import os
 import queue
@@ -22,7 +23,9 @@ class Sms(threading.Thread):
         self.dict = dict()
         self.dict["port"] = "/dev/" + name
         self.dict["node_name"] = name
+        self.dict["ok_date"] = "Unknown"
         self.dict["signal_quality"] = 0
+        self.dict["signal_quality_date"] = "Unknown"
         self.dict["open_cnt"] = 0
         self.dict["nb_config"] = 0
         self.dict["nb_loop"] = 0
@@ -81,8 +84,10 @@ class Sms(threading.Thread):
                         self.read_iter = read_iter_
                     if line != "":
                         self.dict["cmd_rx_cnt"] += 1
+                        #fct.log("DEBUG: line=" + str(line))
                         if "OK" in line:
                             self.dict["cmd_rx_ok_cnt"] += 1
+                            self.dict["ok_date"] = str(datetime.datetime.now())
                         else:
                             line_array = line.split(" ")
                             #fct.log("DEBUG: line_array=" + str(line_array))
@@ -91,9 +96,11 @@ class Sms(threading.Thread):
                                     try:
                                         self.dict["signal_quality"] = int(round(float(line_array[1].replace(",","."))))
                                         self.dict["cmd_rx_signal_quality_cnt"] += 1
+                                        self.dict["signal_quality_date"] = str(datetime.datetime.now())
                                     except Exception as ex:
                                         self.dict["signal_quality"] = 0
                                         fct.log_exception(ex)
+                        line = ""
                     if self.dict["nb_loop"] % 50000 == 0:
                         self.config()
                     if self.dict["nb_loop"] % 1000 == 0:
@@ -141,10 +148,12 @@ class Sms(threading.Thread):
             self.fd_port = open(self.dict["port"], "rb+", buffering=0)
             fd_port = self.fd_port.fileno()
             flag = fcntl.fcntl(fd_port, fcntl.F_GETFL)
-            fcntl.fcntl(fd_port, fcntl.F_SETFL, flag | os.O_NONBLOCK)
+            fcntl.fcntl(fd_port, fcntl.F_SETFL, flag | os.O_NONBLOCK | os.O_NOCTTY)
             self.dict["open_cnt"] += 1
             self.dict["nb_config"] = 0
+            self.dict["ok_date"] = "Unknown"
             self.dict["signal_quality"] = 0
+            self.dict["signal_quality_date"] = "Unknown"
             self.dict["cmd_tx_cnt"] = 0
             self.dict["cmd_rx_cnt"] = 0
             self.dict["cmd_rx_ok_cnt"] = 0
