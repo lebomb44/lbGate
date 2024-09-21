@@ -63,3 +63,8 @@ sudo apt-get install shellinabox
 sudo vi /etc/default/shellinabox
 SHELLINABOX_ARGS="--no-beep -t"
 ```
+
+# Create torrent user and change password
+
+sudo useradd -m torrent
+sudo passwd torrent
