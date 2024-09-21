@@ -66,5 +66,7 @@ SHELLINABOX_ARGS="--no-beep -t"
 
 # Create torrent user and change password
 
+```shell
 sudo useradd -m torrent
 sudo passwd torrent
+```
