@@ -24,3 +24,19 @@ ln -s /media/HDD HDD
 ```shell
 0 2 * * * /usr/bin/rsync -a /var/www/html/backup/ /media/HDD/jeedom/backup/
 ```
+
+# Change Jeedom port
+
+```shell
+sudo nano /etc/apache2/ports.conf
+
+Listen 8080
+
+<IfModule ssl_module>
+        Listen 444
+</IfModule>
+
+<IfModule mod_gnutls.c>
+        Listen 444
+</IfModule>
+```
