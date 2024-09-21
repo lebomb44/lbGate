@@ -40,3 +40,26 @@ Listen 8080
         Listen 444
 </IfModule>
 ```
+
+# Install Transmission
+
+```shell
+sudo apt-get install transmission-daemon
+sudo rm /etc/init.d/transmission-daemon
+sudo systemctl disable transmission-daemon
+Removed symlink /etc/systemd/system/multi-user.target.wants/transmission-daemon.service.
+sudo systemctl stop transmission-daemon
+```
+
+# Install Shell In a Box
+
+```shell
+sudo apt-get install shellinabox
+```
+
+## Edit Configuration File
+
+```shell
+sudo vi /etc/default/shellinabox
+SHELLINABOX_ARGS="--no-beep -t"
+```
