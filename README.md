@@ -198,6 +198,6 @@ sudo mkdir /home/public/Music
 Mount folders at startup
 ```shell
 sudo vi /etc/fstab
-/media/HDD/Movies /home/public/Movies none nofail,bind,ro
-/media/HDD/Music /home/public/Music none nofail,bind,ro
+/media/HDD/Movies /home/public/Movies none nofail,x-systemd.device-timeout=9,bind,ro
+/media/HDD/Music /home/public/Music none nofail,x-systemd.device-timeout=9,bind,ro
 ```
