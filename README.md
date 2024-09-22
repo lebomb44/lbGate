@@ -10,6 +10,15 @@ static routers=192.168.10.1
 static domain_name_servers=8.8.8.8
 ```
 
+# Get sources
+
+```shell
+cd
+mkdir workspace
+cd workspace
+git clone https://github.com/lebomb44/lbGate.git
+```
+
 # Mount HDD
 
 ## Create mount point
