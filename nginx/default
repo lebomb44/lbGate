@@ -23,9 +23,9 @@ server {
 server {
 	listen 443 default_server ssl;
 	server_tokens off;
-	server_name home.lebomb.fr;
-	ssl_certificate /etc/letsencrypt/live/home.lebomb.fr/fullchain.pem;
-	ssl_certificate_key /etc/letsencrypt/live/home.lebomb.fr/privkey.pem;
+	server_name home.fr;
+	ssl_certificate /etc/letsencrypt/live/home.fr/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/home.fr/privkey.pem;
 	include /etc/letsencrypt/options-ssl-nginx.conf;
 	auth_basic "Restricted";                                              
 	auth_basic_user_file /etc/nginx/.htpasswd;
