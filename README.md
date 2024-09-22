@@ -18,6 +18,12 @@ mkdir workspace
 cd workspace
 git clone https://github.com/lebomb44/lbGate.git
 ```
+Configure
+```shell
+cd workspace/lbGate
+cp myconfig_example.py myconfig.py
+vi myconfig.py
+```
 
 # Mount HDD
 
