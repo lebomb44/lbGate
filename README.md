@@ -50,7 +50,8 @@ ln -s /media/HDD HDD
 
 ```shell
 0 2 * * * /usr/bin/rsync -a /var/www/html/backup/ /media/HDD/jeedom/backup/
-0 * * * * /home/pi/workspace/lbGate/nginx/check-services.sh > /tmp/check-services.log
+#0 * * * * /home/pi/workspace/lbGate/nginx/check-services.sh > /tmp/check-services.log
+0 2 * * * /usr/bin/sudo /usr/bin/certbot renew --quiet
 ```
 
 # Change Jeedom port
@@ -117,6 +118,13 @@ Create users
 cd /etc/nginx/
 sudo htpasswd -c .htpasswd user1
 sudo htpasswd .htpasswd user2
+```
+
+# HTTPS certificate from Let's Encrypt
+
+```shell
+sudo apt install certbot python3-certbot-nginx
+sudo certbot certonly --nginx
 ```
 
 # tinyfilemanager
