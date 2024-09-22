@@ -169,3 +169,35 @@ Enable lbGate service
 sudo cp workspace/lbGate/service/lbGate /etc/init.d/.
 sudo update-rc.d lbGate defaults
 ```
+
+# Public account
+
+Create pulic user account
+```shell
+sudo useradd -m public
+sudo chown root:root /home/public
+sudo chmod 755 /home/public
+```
+Limit usage to SFTP only
+```shell
+sudo vi /etc/ssh/sshd_config
+#Subsystem sftp /usr/lib/openssh/sftp-server
+Subsystem sftp internal-sftp
+
+Match User public
+    ChrootDirectory %h
+    ForceCommand internal-sftp
+    AllowTCPForwarding no
+    X11Forwarding no
+```
+Create mounting points
+```shell
+sudo mkdir /home/public/Movies
+sudo mkdir /home/public/Music
+```
+Mount folders at startup
+```shell
+sudo vi /etc/fstab
+/media/HDD/Movies /home/public/Movies none nofail,bind,ro
+/media/HDD/Music /home/public/Music none nofail,bind,ro
+```
