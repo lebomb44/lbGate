@@ -1,3 +1,15 @@
+# Statis IP
+
+```shell
+sudo vi /etc/dhcpcd.conf
+# Example static IP configuration:
+interface eth0
+static ip_address=192.168.10.4/24
+#static ip6_address=fd51:42f8:caae:d92e::ff/64
+static routers=192.168.10.1
+static domain_name_servers=8.8.8.8
+```
+
 # Mount HDD
 
 ## Create mount point
@@ -23,6 +35,7 @@ ln -s /media/HDD HDD
 
 ```shell
 0 2 * * * /usr/bin/rsync -a /var/www/html/backup/ /media/HDD/jeedom/backup/
+0 * * * * /home/pi/workspace/lbGate/nginx/check-services.sh > /tmp/check-services.log
 ```
 
 # Change Jeedom port
@@ -71,6 +84,35 @@ sudo useradd -m torrent
 sudo passwd torrent
 ```
 
+# Nginx
+
+Install Nginx
+```shell
+sudo apt-get install nginx nginx-extras fcgiwrap php-fpm
+```
+
+Configure Nginx
+```shell
+sudo cp workspace/lbGate/nginx/default /etc/nginx/sites-available/.
+sudo cp workspace/lbGate/nginx/nginx.conf /etc/nginx/.
+sudo cp -R lbGate/nginx/html /etc/nginx/.
+```
+
+Create users
+```shell
+cd /etc/nginx/
+sudo htpasswd -c .htpasswd user1
+sudo htpasswd .htpasswd user2
+```
+
+# tinyfilemanager
+
+# Wireguard client
+
+# Torrent namespace
+
+# Wireguard server
+
 # lbGate
 
 Create symbolic link to serial port
@@ -92,5 +134,6 @@ SUBSYSTEM=="tty", ATTRS{devpath}=="1.5.4.4.4", SYMLINK+="sms"  , RUN+="/bin/stty
 
 Enable lbGate service
 ```shell
+sudo cp workspace/lbGate/service/lbGate /etc/init.d/.
 sudo update-rc.d lbGate defaults
 ```
