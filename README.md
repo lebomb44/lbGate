@@ -1,4 +1,4 @@
-# Statis IP
+# Static IP
 
 ```shell
 sudo vi /etc/dhcpcd.conf
@@ -90,14 +90,12 @@ Install Nginx
 ```shell
 sudo apt-get install nginx nginx-extras fcgiwrap php-fpm
 ```
-
 Configure Nginx
 ```shell
 sudo cp workspace/lbGate/nginx/default /etc/nginx/sites-available/.
 sudo cp workspace/lbGate/nginx/nginx.conf /etc/nginx/.
 sudo cp -R lbGate/nginx/html /etc/nginx/.
 ```
-
 Create users
 ```shell
 cd /etc/nginx/
@@ -142,7 +140,6 @@ SUBSYSTEM=="tty", ATTRS{devpath}=="1.5.4.4.3", SYMLINK+="heatpump", RUN+="/bin/s
 SUBSYSTEM=="tty", ATTRS{devpath}=="1.5.4.4.4", SYMLINK+="sms"  , RUN+="/bin/stty -F /dev/sms     -parenb -parodd -cmspar cs8 hupcl -cstopb cread clocal -crtscts -ignbrk -brkint -ignpar -parmrk -inpck -istrip -inlcr -igncr -icrnl -ixon -ixoff -iuclc -ixany -imaxbel -iutf8 -opost -olcuc -ocrnl onlcr -onocr -onlret -ofill -ofdel nl0 cr0 tab0 bs0 vt0 ff0 -isig -icanon -iexten -echo -echoe -echok -echonl -noflsh -xcase -tostop -echoprt -echoctl -echoke -flusho -extproc min 0 time 0 speed 115200"
 
 ```
-
 Enable lbGate service
 ```shell
 sudo cp workspace/lbGate/service/lbGate /etc/init.d/.
