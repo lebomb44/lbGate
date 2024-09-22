@@ -1,0 +1,34 @@
+#! /bin/sh
+# /etc/init.d/lbGate
+
+### BEGIN INIT INFO
+# Provides:          lbGate
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: LbGate server
+# Description:       Server from/to Jeedom to/from Arduino
+### END INIT INFO
+
+#/sbin/start-stop-daemon --start --background --pidfile /tmp/lbGate.pid --make-pidfile \
+#  --quiet --startas /usr/bin/python3 --no-close -- -u /home/pi/workspace/lbGate/lbGate.py >> /tmp/lbGate 2>&1
+
+case "$1" in
+  start)
+    echo "Launching lbGate" > /tmp/lbGate
+    /sbin/start-stop-daemon --start --background --pidfile /tmp/lbGate.pid --make-pidfile \
+      --quiet --startas /usr/bin/python3 --no-close -- -u /home/pi/workspace/lbGate/lbGate.py >> /tmp/lbGate 2>&1
+    ;;
+  stop)
+    echo "Stopping lbGate"
+    /sbin/start-stop-daemon --stop /usr/bin/python3 --no-close -- -u /home/pi/workspace/lbGate/lbGate.py >> /tmp/lbGate 2>&1
+    ;;
+  *)
+    echo "Usage: /etc/init.d/lbGate {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
+

@@ -18,7 +18,7 @@ import lbsms
 HTTPD_PORT = 8444
 MAX_NODE_ERRORS = 10000
 
-ALARM_NAME_URL = ('http://localhost/core/api/jeeApi.php?'
+ALARM_NAME_URL = ('http://localhost:8080/core/api/jeeApi.php?'
                   'plugin=virtual&type=event&'
                   'apikey=IfTprumNYRf0MxCtGlhXGxAB3GPXpHl0&'
                   'id=277&value=')
