@@ -107,6 +107,17 @@ sudo htpasswd .htpasswd user2
 
 # tinyfilemanager
 
+Installation
+```shell
+cd workspace
+git clone https://github.com/prasathmani/tinyfilemanager.git
+```
+Configuration
+```shell
+vi tinyfilemanager/tinyfilemanager.php
+$use_auth = false;
+```
+
 # Wireguard client
 
 # Torrent namespace
