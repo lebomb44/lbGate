@@ -109,7 +109,7 @@ Configure Nginx
 ```shell
 sudo cp workspace/lbGate/nginx/default /etc/nginx/sites-available/.
 sudo cp workspace/lbGate/nginx/nginx.conf /etc/nginx/.
-sudo cp -R lbGate/nginx/html /etc/nginx/.
+sudo cp -R workspace/lbGate/nginx/html /etc/nginx/.
 ```
 Create users
 ```shell
