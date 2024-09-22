@@ -175,6 +175,7 @@ sudo update-rc.d lbGate defaults
 Create pulic user account
 ```shell
 sudo useradd -m public
+sudo passwd public
 sudo chown root:root /home/public
 sudo chmod 755 /home/public
 ```
