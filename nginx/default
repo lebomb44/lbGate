@@ -1,0 +1,143 @@
+##
+# You should look at the following URL's in order to grasp a solid understanding
+# of Nginx configuration files in order to fully unleash the power of Nginx.
+# http://wiki.nginx.org/Pitfalls
+# http://wiki.nginx.org/QuickStart
+# http://wiki.nginx.org/Configuration
+#
+# Generally, you will want to move this file somewhere, and start with a clean
+# file but keep this around for reference. Or just disable in sites-enabled.
+#
+# Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.
+##
+
+# Default server configuration
+#
+
+server {
+	listen 80 default_server;
+	server_tokens off;
+	return 301 https://$host$request_uri;
+}
+
+server {
+	listen 443 default_server ssl;
+	server_tokens off;
+	server_name home.lebomb.fr;
+	ssl_certificate /etc/letsencrypt/live/home.lebomb.fr/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/home.lebomb.fr/privkey.pem;
+	include /etc/letsencrypt/options-ssl-nginx.conf;
+	auth_basic "Restricted";                                              
+	auth_basic_user_file /etc/nginx/.htpasswd;
+	location / {
+		#root /etc/nginx/html;
+		set $auth_basic Restricted;
+		set $proxy_pass none;
+		if (-f /dev/shm/_redirect_box_) {
+			set $auth_basic off;
+			set $proxy_pass http://192.168.10.1;
+		}
+		if (-f /dev/shm/_redirect_switch_) {
+			set $auth_basic off;
+			set $proxy_pass http://192.168.10.2;
+		}
+		if (-f /dev/shm/_redirect_kodi_) {
+			set $auth_basic off;
+			set $proxy_pass http://192.168.10.5:8080;
+		}
+		if (-f /dev/shm/_redirect_poe_) {
+			set $auth_basic off;
+			set $proxy_pass http://192.168.10.6;
+		}
+		if (-f /dev/shm/_redirect_camentry_) {
+			set $auth_basic off;
+			set $proxy_pass http://192.168.10.151;
+		}
+		if (-f /dev/shm/_redirect_camfacade_) {
+			set $auth_basic off;
+			set $proxy_pass http://192.168.10.152;
+		}
+		if (-f /dev/shm/_redirect_camterrasse_) {
+			set $auth_basic off;
+			set $proxy_pass http://192.168.10.153;
+		}
+		auth_basic $auth_basic;
+		if ($proxy_pass != none) {
+			proxy_pass $proxy_pass;
+		}
+		if ($proxy_pass = none) {
+			root /etc/nginx/html;
+		}
+		expires 1s;
+	}
+
+	# Cameras
+	location /cameras/ {
+		gzip off;
+		fastcgi_pass unix:/var/run/fcgiwrap.socket;
+		fastcgi_param SCRIPT_FILENAME /home/osmc/workspace/reolink/index.py;
+		include fastcgi_params;
+	}
+	# Nginx
+	location /nginx {
+		stub_status on;
+	}
+	# Ping-Pong
+	location /ping {
+		auth_basic off;
+		return 200 'pong';
+		add_header Content-Type text/plain;
+	}
+	# ShellInABox
+	location /shell {
+		proxy_pass http://127.0.0.1:4200/;
+	}
+	# Files
+	location /files/ {
+		autoindex on;
+		alias /home/osmc/;
+	}
+	# Explore
+	location /explore/ {
+		fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+		fastcgi_param SCRIPT_FILENAME /home/osmc/workspace/tinyfilemanager/tinyfilemanager.php/$query_string;
+		include fastcgi_params;
+		alias /home/osmc/;
+	}
+	# Movies
+	location /movies/ {
+		auth_basic off;
+		autoindex on;
+		alias /home/public/Movies/;
+	}
+	# Musics
+	location /music/ {
+		auth_basic off;
+		autoindex on;
+		alias /home/public/Music/;
+	}
+	# Pictures
+	location /pictures/ {
+		autoindex on;
+		alias /home/osmc/Pictures/;
+	}
+	# Jeedom
+	location /jeedom/ {
+		auth_basic off;
+		proxy_pass http://192.168.10.4:8080/;
+	}
+	# Transmission
+	location /transmission {
+		proxy_http_version 1.1;
+		proxy_set_header Connection "";
+		proxy_pass_header X-Transmission-Session-Id;
+		proxy_pass http://192.168.100.2:9091;
+	}
+	# Redirect
+	location /redirect/ {
+		gzip off;
+		fastcgi_pass unix:/var/run/fcgiwrap.socket;
+		fastcgi_param SCRIPT_FILENAME /etc/nginx/scripts/redirect.sh;
+		include fastcgi_params;
+	}
+}
