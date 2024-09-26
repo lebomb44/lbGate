@@ -177,6 +177,12 @@ nameserver 208.67.222.222
 nameserver 208.67.220.220-
 ```
 
+# Check VPN namepace IP
+
+```shell
+/usr/bin/sudo /bin/ip netns exec vpn curl ifconfig.co
+```
+
 # Torrent namespace
 
 ```shell
