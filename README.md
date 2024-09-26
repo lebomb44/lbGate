@@ -143,6 +143,16 @@ $use_auth = false;
 
 # Wireguard client
 
+# OpenVPN client
+
+sudo apt install openvpn
+sudo cp workspace/lbGate/vpn/nl.ovpn /etc/openvpn/.
+sudo cp pass.txt /etc/openvpn/.
+sudo cp ca.rsa.4096.crt /etc/openvpn/.
+sudo cp crl.rsa.4096.pem /etc/openvpn/.
+sudo systemctl enable openvpn@client.service
+sudo service openvpn@client start
+
 # Torrent namespace
 
 # Wireguard server
