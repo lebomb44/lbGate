@@ -52,6 +52,7 @@ ln -s /media/HDD HDD
 0 2 * * * /usr/bin/rsync -a /var/www/html/backup/ /media/HDD/jeedom/backup/
 #0 * * * * /home/pi/workspace/lbGate/nginx/check-services.sh > /tmp/check-services.log
 0 2 * * * /usr/bin/sudo /usr/bin/certbot renew --quiet
+*/5 * * * * /home/pi/workspace/lbGate/vpn/up.sh
 ```
 
 # Change Jeedom port
