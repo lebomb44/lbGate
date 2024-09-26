@@ -10,6 +10,13 @@ static routers=192.168.10.1
 static domain_name_servers=8.8.8.8
 ```
 
+# Disable Wifi
+
+```shell
+vi /boot/config.txt
+dtoverlay=disable-wifi
+```
+
 # Get sources
 
 ```shell
