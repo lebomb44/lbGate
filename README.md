@@ -145,6 +145,7 @@ $use_auth = false;
 
 # OpenVPN client
 
+```shell
 sudo apt install openvpn
 sudo cp workspace/lbGate/vpn/client.conf /etc/openvpn/.
 sudo cp pass.txt /etc/openvpn/.
@@ -152,6 +153,17 @@ sudo cp ca.rsa.4096.crt /etc/openvpn/.
 sudo cp crl.rsa.4096.pem /etc/openvpn/.
 sudo systemctl enable openvpn@client.service
 sudo service openvpn@client start
+```
+
+# Set DNS in VPN namespace
+
+```shell
+sudo mkdir /etc/netns
+sudo mkdir /etc/netns/vpn
+sudo vi /etc/netns/vpn/resolv.conf
+nameserver 208.67.222.222
+nameserver 208.67.220.220-
+```
 
 # Torrent namespace
 
