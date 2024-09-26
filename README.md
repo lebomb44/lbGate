@@ -110,6 +110,7 @@ SHELLINABOX_ARGS="--no-beep -t"
 ```shell
 sudo useradd -m torrent
 sudo passwd torrent
+sudo usermod -a -G video torrent
 ```
 
 # Nginx
