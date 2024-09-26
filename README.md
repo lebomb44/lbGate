@@ -73,6 +73,7 @@ Listen 8080
 
 # Install Transmission
 
+## Installation
 ```shell
 sudo apt-get install transmission-daemon
 sudo rm /etc/init.d/transmission-daemon
@@ -80,6 +81,16 @@ sudo systemctl disable transmission-daemon
 Removed symlink /etc/systemd/system/multi-user.target.wants/transmission-daemon.service.
 sudo systemctl stop transmission-daemon
 ```
+
+## Configuration
+
+```shell
+sudo nano /home/torrent/.config/transmission-daemon/settings.json
+    "download-dir": "/media/HDD/Movies",
+    "incomplete-dir": "/media/HDD/Movies",
+    "rpc-whitelist-enabled": false,
+```
+
 
 # Install Shell In a Box
 
@@ -166,6 +177,10 @@ nameserver 208.67.220.220-
 ```
 
 # Torrent namespace
+
+```shell
+*/5 * * * * /home/pi/workspace/lbGate/vpn/up.sh
+```
 
 # Wireguard server
 
