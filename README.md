@@ -146,7 +146,7 @@ $use_auth = false;
 # OpenVPN client
 
 sudo apt install openvpn
-sudo cp workspace/lbGate/vpn/nl.conf /etc/openvpn/.
+sudo cp workspace/lbGate/vpn/client.conf /etc/openvpn/.
 sudo cp pass.txt /etc/openvpn/.
 sudo cp ca.rsa.4096.crt /etc/openvpn/.
 sudo cp crl.rsa.4096.pem /etc/openvpn/.
