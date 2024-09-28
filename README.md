@@ -254,3 +254,38 @@ sudo vi /etc/fstab
 /media/HDD/Movies /home/public/Movies none nofail,x-systemd.device-timeout=9,bind,ro
 /media/HDD/Music /home/public/Music none nofail,x-systemd.device-timeout=9,bind,ro
 ```
+
+Samba
+```shell
+sudo apt-get install samba samba-common-bin
+sudo nano /etc/samba/smb.conf
+####### Authentication #######
+   server role = standalone server
+   security = user
+
+#======================= Share Definitions =======================
+;[printers]
+;   comment = All Printers
+;   browseable = no
+;   path = /var/spool/samba
+;   printable = yes
+;   guest ok = no
+;   read only = yes
+;   create mask = 0700
+;[print$]
+;   comment = Printer Drivers
+;   path = /var/lib/samba/printers
+;   browseable = yes
+;   read only = yes
+;   guest ok = no
+[public]
+  comment= Public Storage
+  path = /home/public/Movies
+  guest ok = yes
+  guest only = yes
+  writable = no
+  force create mode = 0666
+  force directory mode = 0777
+  browseable = yes
+sudo /etc/init.d/smbd restart
+```
