@@ -160,8 +160,6 @@ vi tinyfilemanager/tinyfilemanager.php
 $use_auth = false;
 ```
 
-# Wireguard client
-
 # OpenVPN client
 
 ```shell
@@ -184,16 +182,61 @@ nameserver 208.67.222.222
 nameserver 208.67.220.220-
 ```
 
+# Torrent namespace
+
+```shell
+*/5 * * * * /home/pi/workspace/lbGate/vpn/up.sh
+```
+
 # Check VPN namepace IP
 
 ```shell
 /usr/bin/sudo /bin/ip netns exec vpn curl ifconfig.co
 ```
 
-# Torrent namespace
+# Firewall to forbid VPN namespace access to default namespace (increase security)
+
+## Installation
 
 ```shell
-*/5 * * * * /home/pi/workspace/lbGate/vpn/up.sh
+sudo apt-get install ufw
+
+sudo ufw default allow outgoing
+Default outgoing policy changed to 'allow'
+(be sure to update your rules accordingly)
+
+sudo ufw default allow incoming
+Default incoming policy changed to 'allow'
+(be sure to update your rules accordingly)
+
+sudo ufw reset
+Resetting all rules to installed defaults. This may disrupt existing ssh
+connections. Proceed with operation (y|n)? y
+
+sudo ufw deny in on vpn0
+Rules updated
+Rules updated (v6)
+
+sudo ufw enable
+Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
+Firewall is active and enabled on system startup
+
+sudo ufw status verbose
+Status: active
+Logging: on (low)
+Default: allow (incoming), allow (outgoing)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+Anywhere on vpn0           DENY IN     Anywhere
+Anywhere (v6) on vpn0      DENY IN     Anywhere (v6)
+```
+
+## Test the firewall protection. The following command must be blocked
+
+```shell
+/usr/bin/sudo /bin/ip netns exec vpn ssh osmc@192.168.100.1
 ```
 
 # Wireguard server
