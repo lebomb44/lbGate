@@ -74,6 +74,18 @@ server {
 		fastcgi_param SCRIPT_FILENAME /home/pi/workspace/reolink/index.py;
 		include fastcgi_params;
 	}
+	# Camentry
+	location /camentry/ {
+		proxy_pass http://192.168.10.151/;
+	}
+        # Camfacade
+        location /camfacade/ {
+                proxy_pass http://192.168.10.152/;
+        }
+        # Camterrasse
+        location /camterrasse/ {
+                proxy_pass http://192.168.10.153/;
+        }
 	# Nginx
 	location /nginx {
 		stub_status on;
