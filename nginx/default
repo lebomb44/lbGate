@@ -23,9 +23,9 @@ server {
 server {
 	listen 443 default_server ssl;
 	server_tokens off;
-	server_name home.fr;
-	ssl_certificate /etc/letsencrypt/live/home.fr/fullchain.pem;
-	ssl_certificate_key /etc/letsencrypt/live/home.fr/privkey.pem;
+	server_name home.lebomb.fr;
+	ssl_certificate /etc/letsencrypt/live/home.lebomb.fr/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/home.lebomb.fr/privkey.pem;
 	include /etc/letsencrypt/options-ssl-nginx.conf;
 	auth_basic "Restricted";                                              
 	auth_basic_user_file /etc/nginx/.htpasswd;
@@ -40,10 +40,6 @@ server {
 		if (-f /dev/shm/_redirect_switch_) {
 			set $auth_basic off;
 			set $proxy_pass http://192.168.10.2;
-		}
-		if (-f /dev/shm/_redirect_kodi_) {
-			set $auth_basic off;
-			set $proxy_pass http://192.168.10.5:8080;
 		}
 		if (-f /dev/shm/_redirect_poe_) {
 			set $auth_basic off;
@@ -75,7 +71,7 @@ server {
 	location /cameras/ {
 		gzip off;
 		fastcgi_pass unix:/var/run/fcgiwrap.socket;
-		fastcgi_param SCRIPT_FILENAME /home/osmc/workspace/reolink/index.py;
+		fastcgi_param SCRIPT_FILENAME /home/pi/workspace/reolink/index.py;
 		include fastcgi_params;
 	}
 	# Nginx
@@ -95,14 +91,14 @@ server {
 	# Files
 	location /files/ {
 		autoindex on;
-		alias /home/osmc/;
+		alias /home/pi/;
 	}
 	# Explore
 	location /explore/ {
-		fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
-		fastcgi_param SCRIPT_FILENAME /home/osmc/workspace/tinyfilemanager/tinyfilemanager.php/$query_string;
+		fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+		fastcgi_param SCRIPT_FILENAME /home/pi/workspace/tinyfilemanager/tinyfilemanager.php/$query_string;
 		include fastcgi_params;
-		alias /home/osmc/;
+		alias /home/pi/;
 	}
 	# Movies
 	location /movies/ {
@@ -119,12 +115,12 @@ server {
 	# Pictures
 	location /pictures/ {
 		autoindex on;
-		alias /home/osmc/Pictures/;
+		alias /media/HDD/Pictures/;
 	}
 	# Jeedom
 	location /jeedom/ {
 		auth_basic off;
-		proxy_pass http://192.168.10.4:8080/;
+		proxy_pass http://127.0.0.1:8080/;
 	}
 	# Transmission
 	location /transmission {
