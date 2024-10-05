@@ -241,6 +241,9 @@ Anywhere (v6) on vpn0      DENY IN     Anywhere (v6)
 
 # Wireguard server
 
+https://www.sigmdel.ca/michel/ha/wireguard/wireguard_02_fr.html
+https://wireguard.how/client/raspberry-pi-os/
+
 # lbGate
 
 Create symbolic link to serial port
