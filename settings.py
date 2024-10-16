@@ -84,7 +84,7 @@ acq = dict({
         'moveRelay': {'val': 0},
         'buzzerRelay': {'val': 0},
         'heaterRelay': {'val': 0},
-        'out2Relay': {'val': 0},
+        'wifiRelay': {'val': 0},
         'out3Relay': {'val': 0},
         'out4Relay': {'val': 0}
     },
