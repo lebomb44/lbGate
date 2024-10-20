@@ -35,17 +35,17 @@ class Serial(threading.Thread):
     def run(self):
         """ Cyclic execution to poll for received characters """
         loop_nb = 1
-        if self.node_name == "heatpump":
-            while (self.is_loop_enabled is True) and (loop_nb < 60):
-                time.sleep(1.0)
-                loop_nb += 1
+        #if self.node_name == "heatpump":
+        while (self.is_loop_enabled is True) and (loop_nb < 60):
+            time.sleep(1.0)
+            loop_nb += 1
         loop_nb = 1
         while self.is_loop_enabled is True:
             try:
                 #fct.log("DEBUG: " + self.node_name + " loop " + str(loop_nb))
                 if self.is_open() is False:
                     self.open()
-                    time.sleep(1.0)
+                    time.sleep(5.0)
                 if self.is_open() is True:
                     line = ""
                     cserial = " "
@@ -193,4 +193,5 @@ class Serial(threading.Thread):
             self.close()
             time.sleep(1.0)
             self.open()
+            time.sleep(5.0)
 
