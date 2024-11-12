@@ -131,6 +131,21 @@ class Serial(threading.Thread):
             time.sleep(0.001)
 
 
+    def start(self):
+        """ Start polling loop """
+        fct.log("Starting " + self.node_name + " thread...")
+        self.error_cnt = 0
+        self.error_cnt_max = 0
+        self.cmd_rx_cnt = 0
+        self.ping_tx_cnt = 0
+        self.ping_rx_cnt = 0
+        self.line = ""
+        self.open_cnt = 0
+        self.read_iter = 0
+        self.is_loop_enabled = True
+        threading.Thread.start(self)
+
+
     def stop(self):
         """ Stop polling loop """
         fct.log("Stopping " + self.node_name + " thread...")
@@ -139,6 +154,7 @@ class Serial(threading.Thread):
         fct.log("Closing " + self.node_name + " node...")
         if self.is_open() is True:
             self.fd_port.close()
+
 
     def is_open(self):
         """ Check if serial port is already open """

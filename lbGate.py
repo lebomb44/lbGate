@@ -89,10 +89,15 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
                     if node in settings.node_list:
                         if url_tokens_len > 3:
                             cmd = url_tokens[3]
-                            if url_tokens_len > 4:
-                                for token in url_tokens[4:]:
-                                    cmd = cmd + " " + token
-                            settings.node_list[node].write(cmd)
+                            if cmd == "start":
+                                settings.node_list[node].start()
+                            elif cmd == "stop":
+                                settings.node_list[node].stop()
+                            else:
+                                if url_tokens_len > 4:
+                                    for token in url_tokens[4:]:
+                                        cmd = cmd + " " + token
+                                settings.node_list[node].write(cmd)
                             self.ok200(node + " " + cmd)
                         else:
                             self.error404("No command for node: " + node)
