@@ -51,13 +51,14 @@ acq = dict({
         'roomtemp': {'val': 0.0},
         'operating': {'val': 0},
         'healthcount': {'val': 0},
-        'OPTARIF': {'val': "UNKNOWN"},
-        'HCHC': {'val': 0},
-        'HCHP': {'val': 0},
-        'PTEC': {'val': "UNKNOWN"},
-        'BASE': {'val': 0},
-        'IINST': {'val': 0},
-        'PAPP': {'val': 0}
+        'LTARF': {'val': "UNKNOWN"},
+        'NTARF': {'val': "UNKNOWN"},
+        'EAST': {'val': 0},
+        'IRMS1': {'val': 0},
+        'URMS1': {'val': "UNKNOWN"},
+        'SINSTS': {'val': 0},
+        'healthtic': {'val': 0},
+        'boilerpower': {'val': 0}
     },
     'entry': {
         'ping': {'val': 0, 'fct': "timeout_reset"},
