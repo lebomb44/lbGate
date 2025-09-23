@@ -64,7 +64,9 @@ acq = dict({
         'optic': {'val': 0},
         'injecttic': {'val': 0},
         'healthtic': {'val': 0},
-        'boilerpower': {'val': 0}
+        'boilerpower': {'val': 0},
+        'boilerauto': {'val': 0},
+        'boilerautofloor': {'val': 0}
     },
     'entry': {
         'ping': {'val': 0, 'fct': "timeout_reset"},

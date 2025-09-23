@@ -66,7 +66,7 @@ class Serial(threading.Thread):
                             if (self.line != "") and (cserial == "\n" or cserial == "\r"):
                                 line = self.line
                                 self.line = ""
-                                # fct.log("DEBUG New line create=" + line)
+                                #fct.log("DEBUG New line create=" + line)
                                 break
                             else:
                                 if (cserial != "\n") and (cserial != "\r"):
@@ -96,14 +96,24 @@ class Serial(threading.Thread):
                                     else:
                                         if len(arg_map) == 2:
                                             if arg_map[0] in settings.acq[node][cmd]:
-                                                settings.acq[node][cmd][arg_map[0]] = type(settings.acq[node][cmd][arg_map[0]])(arg_map[1])
+                                                try:
+                                                    settings.acq[node][cmd][arg_map[0]] = type(settings.acq[node][cmd][arg_map[0]])(arg_map[1])
+                                                except Exception as ex:
+                                                    if self.node_name != "heatpump":
+                                                        fct.log("ERROR: cannot cast " + arg_map[1] + " with type " + str(type(settings.acq[node][cmd][arg_map[0]])) + " in cmd " + node + "." + cmd + "." + arg_map[0])
+                                                        fct.log_exception(ex)
                                             else:
                                                 fct.log("ERROR: " + arg_map[0] + " is not in cmd " + node + "." + cmd)
                                         else:
                                             if len(arg_map) == 3:
                                                 if arg_map[0] in settings.acq[node][cmd]:
                                                     if arg_map[1] in settings.acq[node][cmd][arg_map[0]]:
-                                                        settings.acq[node][cmd][arg_map[0]][arg_map[1]] = type(settings.acq[node][cmd][arg_map[0]][arg_map[1]])(arg_map[2])
+                                                        try:
+                                                            settings.acq[node][cmd][arg_map[0]][arg_map[1]] = type(settings.acq[node][cmd][arg_map[0]][arg_map[1]])(arg_map[2])
+                                                        except Exception as ex:
+                                                            if self.node_name != "heatpump":
+                                                                fct.log("ERROR: cannot cast " + arg_map[2] + " with type " + str(type(settings.acq[node][cmd][arg_map[0]][arg_map[2]])) + " in cmd " + node + "." + cmd + "." + arg_map[0] + "." + arg_map[1])
+                                                                fct.log_exception(ex)
                                                     else:
                                                         fct.log("ERROR: " + arg_map[1] + " is not in cmd " + node + "." + cmd + "." + arg_map[0])
                                                 else:
