@@ -79,6 +79,6 @@ if [ $errnoifnstun0 -ne 0 -o $errnotdpid -ne 0 ]; then
 	echo "### Launch server ###"
 	#/usr/bin/sudo /bin/ip netns exec vpn /usr/bin/sudo /bin/su torrent -c "/usr/bin/python /usr/bin/deluged -d -c /home/deluge/config -l /home/deluge/deluged.log -L info &"
 	#/usr/bin/sudo /bin/ip netns exec vpn /usr/bin/sudo /bin/su torrent -c "/usr/bin/python /usr/bin/deluge-web -c /home/deluge/config -l /home/deluge/deluge-web.log -L info &"
-	/usr/bin/sudo /bin/ip netns exec vpn /usr/bin/sudo /bin/su torrent -c "/usr/bin/transmission-daemon -f --log-error --log-info --log-debug -g /home/torrent/.config/transmission-daemon &"
+	/usr/bin/sudo /bin/ip netns exec vpn /usr/bin/sudo /bin/su torrent -c "/usr/bin/transmission-daemon -f --log-error --logfile /tmp/root/transmission-daemon.log -g /home/torrent/.config/transmission-daemon &"
 fi
 

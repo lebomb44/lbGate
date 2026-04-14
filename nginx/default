@@ -107,7 +107,7 @@ server {
 	}
 	# Explore
 	location /explore/ {
-		fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+		fastcgi_pass unix:/var/run/php/php-fpm.sock;
 		fastcgi_param SCRIPT_FILENAME /home/pi/workspace/tinyfilemanager/tinyfilemanager.php/$query_string;
 		include fastcgi_params;
 		alias /home/pi/;

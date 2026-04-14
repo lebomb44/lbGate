@@ -16,13 +16,13 @@
 
 case "$1" in
   start)
-    echo "Launching lbGate" > /tmp/lbGate
-    /sbin/start-stop-daemon --start --background --pidfile /tmp/lbGate.pid --make-pidfile \
-      --quiet --startas /usr/bin/python3 --no-close -- -u /home/pi/workspace/lbGate/lbGate.py >> /tmp/lbGate 2>&1
+    echo "Launching lbGate" > /tmp/root/lbGate
+    /sbin/start-stop-daemon --start --background --pidfile /tmp/root/lbGate.pid --make-pidfile \
+      --quiet --startas /usr/bin/python3 --no-close -- -u /home/pi/workspace/lbGate/lbGate.py >> /tmp/root/lbGate 2>&1
     ;;
   stop)
-    echo "Stopping lbGate"
-    /sbin/start-stop-daemon --stop /usr/bin/python3 --no-close -- -u /home/pi/workspace/lbGate/lbGate.py >> /tmp/lbGate 2>&1
+    echo "Stopping lbGate" >> /tmp/root/lbGate
+    /sbin/start-stop-daemon --stop /usr/bin/python3 --no-close -- -u /home/pi/workspace/lbGate/lbGate.py >> /tmp/root/lbGate 2>&1
     ;;
   *)
     echo "Usage: /etc/init.d/lbGate {start|stop}"
