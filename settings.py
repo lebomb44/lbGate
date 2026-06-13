@@ -45,7 +45,7 @@ acq = dict({
         'mode': {'val': "UNKNOWN"},
         'temp': {'val': 0.0},
         'fanspeed': {'val': "UNKNOWN"},
-        'vane': {'val': 0},
+        'vane': {'val': "UNKNOWN"},
         'widevane': {'val': "UNKNOWN"},
         'isee': {'val': 0},
         'roomtemp': {'val': 0.0},
@@ -66,7 +66,14 @@ acq = dict({
         'healthtic': {'val': 0},
         'boilerpower': {'val': 0},
         'boilerauto': {'val': 0},
-        'boilerautofloor': {'val': 0}
+        'boilerautofloor': {'val': 0},
+        'gridvoltage': {'val': 0},
+        'gridvoltageref': {'val': 0},
+        'gridcurrent': {'val': 0},
+        'gridcurrentref': {'val': 0},
+        'gridpower': {'val': 0},
+        'gridinject': {'val': 0},
+        'gridhealth': {'val': 0}
     },
     'entry': {
         'ping': {'val': 0, 'fct': "timeout_reset"},

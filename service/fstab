@@ -25,6 +25,7 @@ tmpfs        /var/www/html/log      tmpfs  defaults,size=100M                   
 /ssd/save/var/lib/mysql            /var/lib/mysql            none   nofail,noatime,x-systemd.device-timeout=9,bind
 /ssd/save/var/lib/ntp              /var/lib/ntp              none   nofail,noatime,x-systemd.device-timeout=9,bind
 /ssd/save/var/lib/samba            /var/lib/samba            none   nofail,noatime,x-systemd.device-timeout=9,bind
+/ssd/save/var/lib/PackageKit       /var/lib/PackageKit       none   nofail,noatime,x-systemd.device-timeout=9,bind
 tmpfs        /var/lib/samba/private/msg.sock tmpfs  defaults,nofail,noatime,size=100M,mode=700      0 0
 /ssd/save/var/www/html/backup      /var/www/html/backup      none   nofail,noatime,x-systemd.device-timeout=9,bind
 /ssd/save/etc/letsencrypt/live     /etc/letsencrypt/live     none   nofail,noatime,x-systemd.device-timeout=9,bind

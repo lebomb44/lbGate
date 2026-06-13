@@ -22,7 +22,8 @@ case "$1" in
     ;;
   stop)
     echo "Stopping lbGate" >> /tmp/root/lbGate
-    /sbin/start-stop-daemon --stop /usr/bin/python3 --no-close -- -u /home/pi/workspace/lbGate/lbGate.py >> /tmp/root/lbGate 2>&1
+    #/sbin/start-stop-daemon --stop /usr/bin/python3 --no-close -- -u /home/pi/workspace/lbGate/lbGate.py >> /tmp/root/lbGate 2>&1
+    /sbin/start-stop-daemon --stop --pidfile /tmp/root/lbGate.pid >> /tmp/root/lbGate 2>&1
     ;;
   *)
     echo "Usage: /etc/init.d/lbGate {start|stop}"
